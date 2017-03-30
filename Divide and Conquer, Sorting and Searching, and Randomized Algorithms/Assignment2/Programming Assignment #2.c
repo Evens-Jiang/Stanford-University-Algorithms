@@ -1,10 +1,9 @@
 #include <stdio.h>
-#include <limits.h>
-#include <math.h>
+
 long long mergeSortRecursive(int arr[], int result[], int start, int end) {
 	if(start >= end)
 		return 0;
-	int start1 = start, end1 = ((end - start) >> 1 )+ start;
+	int start1 = start, end1 = ((end - start) >> 1 ) + start;
 	int start2 = end1 + 1, end2 = end;
 	int k = start;
 	long long inversionCounter = 0;
@@ -23,13 +22,17 @@ long long mergeSortRecursive(int arr[], int result[], int start, int end) {
 		k++;
 //		result[k] = arr[start1] < arr[start2] ? arr[start1] : arr[start2];
 	}
+	if(start2 == end2)
+		inversionCounter = inversionCounter * (end1 - start1 + 1);
 	while(start1 <= end1){
 		result[k] = arr[start1];
-		k++; start1++;
+		k++; 
+		start1++;
 	}
 	while(start2 <= end2){
 		result[k] = arr[start2];
-		k++; start2++;
+		k++; 
+		start2++;
 	}
 	for(k = start; k <= end; k++)
 		arr[k] = result[k];
@@ -42,15 +45,26 @@ long long mergeSort(int arr[], const int length) {
 }
 
 int main() {
-	FILE *pFile;
-	int inputArray[100000];//, outputArray[100000];
-	pFile = fopen("Programming Assignment #2.txt", "r");
+	FILE *pFile, *wFile;
+	int inputArray[100000];
+	
+	pFile = fopen("inputIntegers.txt", "r");
+	wFile = fopen("sortResult.txt", "w");
+	
 	if(!pFile)
 		printf("Fail to open file\n");
 	else
 		printf("Open file successfully!\n");
-	fread(inputArray, sizeof(int), 100000, pFile);
+	
+	for(int i = 0; i < 100000; i++)
+		fscanf(pFile, "%d", &inputArray[i]);
+	
 	printf("Inversion count = %lld\n", mergeSort(inputArray, sizeof(inputArray) / sizeof(int)));
+
+	for(int i = 0; i < 100000; i++)
+		fprintf(wFile, "%d\n", inputArray[i]);
+	
 	fclose (pFile);
+	fclose (wFile);
    	return 0;
 }
