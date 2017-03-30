@@ -1,12 +1,13 @@
 #include <stdio.h>
-
-int mergeSortRecursive(int arr[], int result[], int start, int end) {
+#include <limits.h>
+#include <math.h>
+long long mergeSortRecursive(int arr[], int result[], int start, int end) {
 	if(start >= end)
 		return 0;
 	int start1 = start, end1 = ((end - start) >> 1 )+ start;
 	int start2 = end1 + 1, end2 = end;
 	int k = start;
-	long long int inversionCounter = 0;
+	long long inversionCounter = 0;
 	inversionCounter += mergeSortRecursive(arr, result, start1, end1);
 	inversionCounter += mergeSortRecursive(arr, result, start2, end2);
 	while(start1 <= end1 && start2 <= end2){
@@ -35,7 +36,7 @@ int mergeSortRecursive(int arr[], int result[], int start, int end) {
 	return inversionCounter;
 }
 
-int mergeSort(int arr[], const int length) {
+long long mergeSort(int arr[], const int length) {
 	int result[length];
 	return mergeSortRecursive(arr, result, 0, length - 1);
 }
@@ -43,13 +44,13 @@ int mergeSort(int arr[], const int length) {
 int main() {
 	FILE *pFile;
 	int inputArray[100000];//, outputArray[100000];
-	pFile = fopen("123.txt", "r");
+	pFile = fopen("Programming Assignment #2.txt", "r");
 	if(!pFile)
 		printf("Fail to open file\n");
 	else
 		printf("Open file successfully!\n");
-	fread(inputArray, 400000, 4, pFile);
-	printf("Inversion count = %d\n", mergeSort(inputArray, sizeof(inputArray) / sizeof(int)));
+	fread(inputArray, sizeof(int), 100000, pFile);
+	printf("Inversion count = %lld\n", mergeSort(inputArray, sizeof(inputArray) / sizeof(int)));
 	fclose (pFile);
    	return 0;
 }
