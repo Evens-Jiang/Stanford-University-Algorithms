@@ -16,11 +16,10 @@ long long mergeSortRecursive(int arr[], int result[], int start, int end) {
 		else{
 			result[k] = arr[start2];
 			start2++;
-			for(i = 0; i < end1 - start1 + 1; i++)
-				inversionCounter += 1;
+			inversionCounter += (end1 - start1 + 1);
 		}
 		k++;
-//		result[k] = arr[start1] < arr[start2] ? arr[start1] : arr[start2];
+//		result[k++] = arr[start1] < arr[start2] ? arr[start1++] : arr[start2++];
 	}
 	while(start1 <= end1){
 		result[k] = arr[start1];
@@ -42,17 +41,18 @@ long long mergeSort(int arr[], const int length) {
 }
 int main() {
 	FILE *pFile, *wFile;
-	int inputArray[100000];
+	int size = 100000;
+	int inputArray[size];
 	pFile = fopen("inputIntegers.txt", "r");
 	wFile = fopen("sortResult.txt", "w");
 	if(!pFile)
 		printf("Fail to open file\n");
 	else
 		printf("Open file successfully!\n");
-	for(int i = 0; i < 100000; i++)
+	for(int i = 0; i < size; i++)
 		fscanf(pFile, "%d", &inputArray[i]);
 	printf("Inversion count = %lld\n", mergeSort(inputArray, sizeof(inputArray) / sizeof(int)));
-	for(int i = 0; i < 100000; i++)
+	for(int i = 0; i < size; i++)
 		fprintf(wFile, "%d\n", inputArray[i]);
 	fclose (pFile);
 	fclose (wFile);
