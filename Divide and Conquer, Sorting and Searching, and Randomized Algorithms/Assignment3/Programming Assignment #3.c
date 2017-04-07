@@ -1,3 +1,9 @@
+/*
+	10,000 numbers in QuickSort.txt
+	Use first number as the pivot. The comparisons is 162,085
+	Use last number as the pivot. The comparisons is 164,123
+	Use median of three as the pivot. The comparisons is 138,382
+*/
 #include <stdio.h>
 void swap(int *a, int *b){
   	int tmp = *a;
@@ -18,28 +24,14 @@ int partition(int array[], int left, int right, int pivotIndex, int *counter){
 	return compareIndex;
 }
 
-int Median(int num1, int num2, int num3)
-    {
-        if ((num2 < num1 && num1 < num3) || (num2 > num1 && num1 > num3))
-        {
-            return num1;
-        }
-
-        if ((num1 < num2 && num2 < num3) || (num1 > num2 && num2 > num3))
-        {
-            return num2;
-        }
-
-        return num3;
-    }
 int medianOfThree(int array[], int left, int right){
 	int length = right - left + 1;
-	int median = (length % 2) == 0 ? (length / 2) - 1 : (length / 2);
-	int first = array[left], middle = array[median], last = array[right];
+	int mid = (length % 2) == 0 ? ((length / 2) - 1) + left : (length / 2) + left;
+	int first = array[left], middle = array[mid], last = array[right];
 	if ((middle < first && first < last) || (middle > first && first > last))
     	return left;
 	if ((first < middle && middle < last) || (first > middle && middle > last))
-		return median;
+		return mid;
 	return right;
 }
 void quickSort(int array[], int left, int right, int *counter){
