@@ -25,29 +25,58 @@ int convertCharToInt(char *c, int digit){
 
 void main(){
 	FILE *inFile = fopen("kargerMinCut.txt", "r");
-	int inputArray[SIZE][SIZE] = {0};
-	char temp[SIZE];
-	int i = 0, j = 0, digit = 1, row = 1;
+	int adjacencyList[SIZE + 1][SIZE] = {0};
+	char temp[3 * SIZE];
+	int i = 0, j = 0, digit = 1, row = 0, col = 0, colCounter = 0;
+	int rowCheck = 1;
 	if(!inFile)
 		printf("Fail to open file\n");
 	else
 		printf("Open file successfully!\n");
 	
-	for(i = 0; i < 5; i++){
+	for(i = 0; i < SIZE; i++){
 		if ( fgets (temp , SIZE , inFile) != NULL )
        		while(temp[j] != '\0'){
-
-				if(temp[j] == 9 || temp[j] == 10){
-					printf("%3d", convertCharToInt(&temp[j], digit));
-					digit = 1;
+				if(rowCheck){
+					if(temp[j + 1] == 9){
+						row = convertCharToInt(&temp[j - digit + 1], digit);
+						digit = 1;
+						rowCheck = 0;
+					}
+					else if(temp[j] == 9){}
+					else
+						digit++;
 				}
-				else
-					printf("%3d", convertCharToInt(&temp[j], digit));
+				else{
+					if(temp[j + 1] == 9){
+//						printf("%3d ", convertCharToInt(&temp[j - digit + 1], digit));
+						adjacencyList[row][col] = convertCharToInt(&temp[j - digit + 1], digit);
+						digit = 1;
+					}
+					else if(temp[j] == 9 && colCounter == 0){}
+					else if(temp[j] == 9)
+						col++;
+					else if(temp[j] == 10)
+						col = 0;
+					else
+						digit++;
+					colCounter++;
+				}
 				j++;
 			}
+		colCounter = 0;
 		j = 0;
-		row++;
-		printf("\n");
+		rowCheck = 1;
+	}
+	j = 0;
+	for(i = 1; i <= row; i++){
+		printf("%3d\n", i);
+		while(adjacencyList[i][j] != 0){
+			printf("%3d ", adjacencyList[i][j]);
+			j++;
+		}
+		printf("\n\n");
+		j = 0;
 	}
 	fclose(inFile);
 }
