@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
+#include <time.h>
 
 #define SIZE 200
 
@@ -17,7 +19,7 @@ int convertCharToInt(char *c, int digit){
 	}
 	return number;
 }
-void adjacencyList(int array[][SIZE + 1], FILE *file){
+void MakeadjacencyList(int array[][SIZE + 1], FILE *file){
 	char temp[3 * SIZE];
 	int i = 0, j = 0, digit = 1;
 	int row = 0, col = 0, colCounter = 0;
@@ -41,7 +43,10 @@ void adjacencyList(int array[][SIZE + 1], FILE *file){
 						array[row][col] = convertCharToInt(&temp[j - digit + 1], digit);
 						digit = 1;
 					}
-					else if(temp[j] == 9 && colCounter == 0){}
+					else if(temp[j] == 9 && colCounter == 0){
+						array[row][col] = row;
+						col++;
+					}
 					else if(temp[j] == 9)
 						col++;
 					else if(temp[j] == 10)
@@ -56,18 +61,18 @@ void adjacencyList(int array[][SIZE + 1], FILE *file){
 		j = 0;
 		rowCheck = 1;
 	}
-//	j = 0;
-//	for(i = 1; i <= SIZE; i++){
-//		printf("%3d\n", i);
-//		while(array[i][j] != 0){
-//			printf("%3d ", array[i][j]);
-//			j++;
-//		}
-//		printf("\n\n");
-//		j = 0;
-//	}
+	j = 0;
+	for(i = 1; i <= SIZE; i++){
+		printf("%3d\n", i);
+		while(array[i][j] != 0){
+			printf("%3d ", array[i][j]);
+			j++;
+		}
+		printf("\n\n");
+		j = 0;
+	}
 }
-void adjacencyMatrix(int array[][SIZE + 1], FILE *file){
+void MakeAdjacencyMatrix(int array[][SIZE + 1], FILE *file){
 	char temp[3 * SIZE];
 	int i = 0, j = 0, digit = 1;
 	int row = 0, col = 0;
@@ -100,17 +105,26 @@ void adjacencyMatrix(int array[][SIZE + 1], FILE *file){
 		j = 0;
 		rowCheck = 1;
 	}
-//	j = 0;
-//	for(i = 1; i <= row; i++){
-//		printf("%3d ", i);
-//		while(j != 200){
-//			printf("%3d ", array[i][j]);
-//			j++;
-//		}
-//		printf("\n\n");
-//		j = 0;
-//	}
+	// j = 0;
+	// for(i = 1; i <= row; i++){
+	// 	printf("%3d ", i);
+	// 	while(j != 200){
+	// 		printf("%3d ", array[i][j]);
+	// 		j++;
+	// 	}
+	// 	printf("\n\n");
+	// 	j = 0;
+	// }
 }
+int randomSelection(int array[][SIZE + 1], int size){
+	srand (time(NULL));
+	return rand() % size;
+}
+
+void contraction(int inputArray[][SIZE + 1], int number){
+	
+}
+
 void main(){
 	FILE *inFile = fopen("kargerMinCut.txt", "r");
 	int inputArray[SIZE + 1][SIZE + 1] = {0};
@@ -119,8 +133,7 @@ void main(){
 		printf("Fail to open file\n");
 	else
 		printf("Open file successfully!\n");
-	adjacencyList(inputArray, inFile);
-//	adjacencyMatrix(inputArray, inFile);
+	MakeadjacencyList(inputArray, inFile);
 	
 	fclose(inFile);
 }
