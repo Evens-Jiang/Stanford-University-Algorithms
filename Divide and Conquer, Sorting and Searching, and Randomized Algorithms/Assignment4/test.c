@@ -7,9 +7,9 @@
 int COUNTER = 200;
 
 struct Adjacency {
-	int point;
-	int adjList[SIZE + 1];
-}
+	int point = 0;
+	int adjList[SIZE + 1] = {0};
+};
 
 void swap(int *a, int *b){
   	int tmp = *a;
@@ -30,7 +30,7 @@ int convertCharToInt(char *c, int digit){
 	}
 	return number;
 }
-void MakeadjacencyList(int array[][2 * SIZE], FILE *file){
+void MakeadjacencyList(struct Adjacency list[SIZE + 1], FILE *file){
 	char temp[3 * SIZE];
 	int i = 0, j = 0, digit = 1;
 	int row = 0, col = 0, colCounter = 0;
@@ -51,11 +51,11 @@ void MakeadjacencyList(int array[][2 * SIZE], FILE *file){
 				}
 				else{
 					if(temp[j + 1] == 9){
-						array[row][col] = convertCharToInt(&temp[j - digit + 1], digit);
+						list[row].point = convertCharToInt(&temp[j - digit + 1], digit);
 						digit = 1;
 					}
 					else if(temp[j] == 9 && colCounter == 0){
-						array[row][col] = row;
+						list[row].adjList[col] = row;
 						col++;
 					}
 					else if(temp[j] == 9)
@@ -72,16 +72,16 @@ void MakeadjacencyList(int array[][2 * SIZE], FILE *file){
 		j = 0;
 		rowCheck = 1;
 	}
-//	j = 0;
-//	for(i = 1; i <= SIZE; i++){
-//		printf("%3d\n", i);
-//		while(array[i][j] != 0){
-//			printf("%3d ", array[i][j]);
-//			j++;
-//		}
-//		printf("\n\n");
-//		j = 0;
-//	}
+	j = 0;
+	for(i = 1; i <= SIZE; i++){
+		printf("list[%d].point\n", list[i].point);
+		while(list[i].adjList[j] != 0){
+			printf("%3d ", list[i].adjList[j]);
+			j++;
+		}
+		printf("\n\n");
+		j = 0;
+	}
 }
 void MakeAdjacencyMatrix(int array[][2 * SIZE], FILE *file){
 	char temp[3 * SIZE];
@@ -274,16 +274,23 @@ int findMinCut(int array[][2 * SIZE]){
 
 void main(){
 	FILE *inFile = fopen("kargerMinCut.txt", "r");
-	int inputArray[SIZE + 1][2 * SIZE] = {0};
+	struct Adjacency list[SIZE + 1];
 	int i = 0, j = 0;
 	int minCut;
+	
+	for(i = 0; i <= SIZE; i++){
+		list[i].point = i;
+		for(j = 0; j <= SIZE; j++){
+			list[i].adjList[j] = 0;
+		}
+	}
 	
 	if(!inFile)
 		printf("Fail to open file\n");
 	else
 		printf("Open file successfully!\n");
 	MakeadjacencyList(inputArray, inFile);
-	minCut = findMinCut(inputArray);
-	printf("minCut = %d", minCut);
+//	minCut = findMinCut(inputArray);
+//	printf("minCut = %d", minCut);
 	fclose(inFile);
 }
