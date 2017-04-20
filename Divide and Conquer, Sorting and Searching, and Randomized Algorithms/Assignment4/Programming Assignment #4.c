@@ -1,3 +1,7 @@
+/*
+// Karger min cut
+// min cut number = 17
+*/
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -121,7 +125,6 @@ void makeAdjacencyMatrix(int array[][2 * SIZE], FILE *file){
 	// }
 }
 void randomSelection(struct Adjacency list[SIZE + 1], int pick[2]){
-	srand(time(NULL));
 	int randomRow = rand() % COUNTER + 1, randomCol;
 	int length = 0, temp[SIZE] = {0};
 	int i;
@@ -152,7 +155,7 @@ void contraction(struct Adjacency list[SIZE + 1], int edge[2]){
 	int v1 = list[row1].point, v2 = edge[1];
 	int i = 1, j = 1;
 
-//	printf("v1 = %d, v2 = %d\n", v1, v2);
+	// printf("v1 = %d, v2 = %d\n", v1, v2);
 	
 	//find the row2
 	while(list[row2].point != v2 && row2 <= COUNTER)
@@ -162,7 +165,7 @@ void contraction(struct Adjacency list[SIZE + 1], int edge[2]){
 	if(row1 > row2){
 		swap(&row1, &row2);
 		v1 = list[row1].point, v2 = list[row2].point;
-//		printf("v1 = %d, v2 = %d\n", v1, v2);
+		// printf("v1 = %d, v2 = %d\n", v1, v2);
 	}
 	
 	//contraction
@@ -173,7 +176,7 @@ void contraction(struct Adjacency list[SIZE + 1], int edge[2]){
 			list[row1].adjList[i] += list[row2].adjList[i];
 	}
 	for(i = 1; i <= SIZE; i++){
-		if(i == v1)
+		if(i == row1)
 			continue;
 		if(list[i].adjList[v2] > 0){
 			list[i].adjList[v1] += list[i].adjList[v2];
@@ -218,7 +221,7 @@ int findMinCut(struct Adjacency list[SIZE + 1]){
 		if(list[1].adjList[i] > 0)
 			counter2 += list[1].adjList[i];
 	}
-//	printf("counter2 = %d\n", counter2);
+	// printf("counter2 = %d\n", counter2);
 	return counter1;
 }
 
@@ -227,7 +230,7 @@ void main(){
 	struct Adjacency list[SIZE + 1];
 	int i = 0, j = 0, count = 0, k = 0;
 	int minCut = 1000, t = 0, fail = 0;
-	
+	srand(time(NULL));
 	for(i = 0; i <= SIZE; i++){
 		list[i].point = 0;
 		for(j = 0; j <= SIZE; j++){
@@ -243,33 +246,31 @@ void main(){
 	else
 		printf("Open file successfully!\n");
 	makeAdjacencyList(list, inFile);
-	minCut = findMinCut(list);
 	printf("minCut = %d\n", minCut);
-//	for(k = 0; k <= 500; k++){
-//		t = findMinCut(list);	
-//		if(t < minCut){
-//			minCut = t;
-//			printf("minCut = %d\n", minCut);
-//			count++;
-//		}
-//		else{
-//			fail++;
-//		}
-//		printf("t = %d\n", t);
-//		COUNTER = 200;
-//		for(i = 0; i <= SIZE; i++){
-//			list[i].point = 0;
-//			for(j = 0; j <= SIZE; j++){
-//				if(j == i)
-//					list[i].adjList[j] = -1;
-//				else
-//					list[i].adjList[j] = 0;
-//			}
-//		}
-//		inFile = fopen("kargerMinCut.txt", "r");
-//		makeAdjacencyList(list, inFile);
-//	}
-//	printf("fail = %d\n", fail);
-//	printf("counter = %d", count);
+	for(k = 0; k < 500; k++){
+		t = findMinCut(list);	
+		if(t < minCut){
+			minCut = t;
+			printf("minCut = %d\n", minCut);
+			count++;
+		}
+		else{
+			fail++;
+		}
+		COUNTER = 200;
+		for(i = 0; i <= SIZE; i++){
+			list[i].point = 0;
+			for(j = 0; j <= SIZE; j++){
+				if(j == i)
+					list[i].adjList[j] = -1;
+				else
+					list[i].adjList[j] = 0;
+			}
+		}
+		inFile = fopen("kargerMinCut.txt", "r");
+		makeAdjacencyList(list, inFile);
+	}
+	printf("fail = %d\n", fail);
+	printf("counter = %d", count);
 	fclose(inFile);
 }
