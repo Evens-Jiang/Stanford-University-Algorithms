@@ -1,4 +1,7 @@
+# Compiled source #
 *.exe
+
+# Text books, slildes, videos #
 99_Text books
 01_Divide and Conquer, Sorting and Searching, and Randomized Algorithms/01_Slides
 01_Divide and Conquer, Sorting and Searching, and Randomized Algorithms/02_Videos
