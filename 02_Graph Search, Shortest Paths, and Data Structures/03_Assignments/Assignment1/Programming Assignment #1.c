@@ -3,9 +3,13 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define SIZE 58726
+int INIT = 0;
+
 struct Adjacency {
-	int point;
-	int adjList[SIZE + 1];
+	int vertex;
+	int size;
+	int *adjList = malloc(INIT * sizeof(int));
 };
 
 void swap(int *a, int *b){
@@ -30,11 +34,50 @@ int convertCharToInt(char *c, int digit){
 
 void main(){
 	FILE *inFile = fopen("SCC.txt", "r");
-	
+	int Adjacency array[SIZE];
+	int temp[100] = {0};
+	int vertex1, vertex2;
+	int i = 1, j = 1, k = 1;
+
+	for (i = 0; i <= SIZE; ++i){
+		array[i].vertex = i;
+		array[i].size = 0;
+	}
+
 	if(!inFile)
 		printf("Fail to open file\n");
 	else
 		printf("Open file successfully!\n");
-	
+	i = 1;
+	while(fscanf(inFile, "%d %d", &vertex1, &temp[j]) != EOF){
+		if(vertex1 == array[i].vertex){
+			j++;
+		}
+		else{
+			array[i].size = j;
+			for(k = 1; k <= j; k++){
+				array[i].adjList[k] = temp[k];
+				temp[k] = 0;
+			}
+			j = 1;
+			i++;
+			j++;
+		}
+	}
+	array[i].size = j;
+	for(k = 1; k <= j; k++){
+		array[i].adjList[k] = temp[k];
+		temp[k] = 0;
+	}
+	j = 1;
+
+	for(i = 1; i <= SIZE; i++){
+		printf("vertex = %d\n", array[i].vertex);
+		while(array[i].adjList[j]){
+			printf("%6d ", array[i].adjList[j]);
+		}
+		printf("\n\n");
+	}
+
 	fclose(inFile);
 }
