@@ -24,12 +24,36 @@ DFS(graph G, node i)
 #include <stdlib.h>
 #include "graph.h"
 
+#define SIZE 875714 
+int S;
+int TIME = 0;
+
+void dfs(graph_p graph, int node){
+	int i, vertex;
+	adjlist_node_p adjListNodePtr = graph->adjListArr[node].head;
+
+	graph->adjListArr[node].explored1 = TRUE;
+	graph->adjListArr[node].leader = S;
+	for(i = 0; i < adjListPtr.num_members; i++){
+		vertex = adjListNodePtr.vertex;
+		if(!graph->adjListArr[vertex].explored1)
+			dfs(graph, vertex);
+	}
+	TIME++;
+	graph->adjListArr[node].time = TIME;
+}
+
+void dfs_loop(graph_p graph){
+	S;
+	TIME = 0;
+	for
+}
+
 void main(){
 	FILE *inFile = fopen("SCC.txt", "r");
-	int size = 875714;
 	int start, end;
 
-	graph_p dir_graph = createGraph(size, DIRECTED);
+	graph_p dir_graph = createGraph(SIZE, DIRECTED);
 
 	if(!inFile)
 		printf("Fail to open file\n");

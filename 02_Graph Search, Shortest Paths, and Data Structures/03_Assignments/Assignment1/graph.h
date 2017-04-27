@@ -9,7 +9,7 @@ http://simplestcodings.blogspot.tw/2013/09/graphs.html?view=sidebar
 #define _GRAPH_H_
  
 typedef enum {UNDIRECTED=0,DIRECTED} graph_type_e;
- 
+ typedef enum {FALSE = 0, TRUE} bool;
 /* Adjacency list node*/
 typedef struct adjlist_node
 {
@@ -22,6 +22,8 @@ typedef struct adjlist
 {
     int num_members;           /*number of members in the list (for future use)*/
     adjlist_node_t *head;      /*head of the adjacency linked list*/
+    int time, leader;
+    bool explored1, explored2;
 }adjlist_t, *adjlist_p;
  
 /* Graph structure. A graph is an array of adjacency lists.
@@ -72,6 +74,10 @@ graph_p createGraph(int n, graph_type_e type)
     {
         graph->adjListArr[i].head = NULL;
         graph->adjListArr[i].num_members = 0;
+        graph->adjListArr[i].time = -1;         //for DFS
+        graph->adjListArr[i].leader = -1;
+        graph->adjListArr[i].explored1 = FALSE;
+        graph->adjListArr[i].explored2 = FALSE;
     }
  
     return graph;
