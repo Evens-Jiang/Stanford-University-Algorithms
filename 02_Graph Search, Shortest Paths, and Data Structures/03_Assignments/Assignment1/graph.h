@@ -13,8 +13,8 @@ typedef enum {FALSE = 0, TRUE} bool;
 /* Adjacency list node*/
 typedef struct adjlist_node
 {
-    int vertex;                /*Index to adjacency list array*/
-    struct adjlist_node *next; /*Pointer to the next node*/
+    int vertex, endTime;                /*Index to adjacency list array*/
+    struct adjlist_node *next;          /*Pointer to the next node*/
 }adjlist_node_t, *adjlist_node_p;
  
 /* Adjacency list */
@@ -22,7 +22,7 @@ typedef struct adjlist
 {
     int num_members;           /*number of members in the list (for future use)*/
     adjlist_node_t *head;      /*head of the adjacency linked list*/
-    int time, leader;
+    int startTime, endTime, leader;
     bool explored;
 }adjlist_t, *adjlist_p;
  
@@ -50,6 +50,7 @@ adjlist_node_p createNode(int v)
         err_exit("Unable to allocate memory for new node");
  
     newNode->vertex = v;
+    newNode->endTime = -1;
     newNode->next = NULL;
  
     return newNode;
@@ -66,7 +67,7 @@ graph_p createGraph(int n, graph_type_e type)
     graph->type = type;
  
     /* Create an array of adjacency lists*/
-    graph->adjListArr = (adjlist_p)malloc(n * sizeof(adjlist_t));
+    graph->adjListArr = (adjlist_p)malloc((n + 1) * sizeof(adjlist_t));
     if(!graph->adjListArr)
         err_exit("Unable to allocate memory for adjacency list array");
  
@@ -74,11 +75,11 @@ graph_p createGraph(int n, graph_type_e type)
     {
         graph->adjListArr[i].head = NULL;
         graph->adjListArr[i].num_members = 0;
-        graph->adjListArr[i].time = -1;         //for DFS
+        graph->adjListArr[i].startTime = -1;         //for DFS
+        graph->adjListArr[i].endTime = -1;
         graph->adjListArr[i].leader = -1;
         graph->adjListArr[i].explored = FALSE;
     }
- 
     return graph;
 }
  
@@ -91,7 +92,7 @@ void destroyGraph(graph_p graph)
         {
             int v;
             /*Free up the nodes*/
-            for (v = 0; v < graph->num_vertices; v++)
+            for (v = 0; v <= graph->num_vertices; v++)
             {
                 adjlist_node_p adjListPtr = graph->adjListArr[v].head;
                 while (adjListPtr)
@@ -132,10 +133,11 @@ void addEdge(graph_t *graph, int src, int dest)
 void displayGraph(graph_p graph)
 {
     int i;
-    for (i = 0; i < graph->num_vertices; i++)
+    for (i = 1; i <= graph->num_vertices; i++)
     {
         adjlist_node_p adjListPtr = graph->adjListArr[i].head;
-        printf("\n%d: ", i);
+        printf("\n%d (end time = %d, leader = %d): "\
+                , i, graph->adjListArr[i].endTime, graph->adjListArr[i].leader);
         while (adjListPtr)
         {
             printf("%d->", adjListPtr->vertex);
