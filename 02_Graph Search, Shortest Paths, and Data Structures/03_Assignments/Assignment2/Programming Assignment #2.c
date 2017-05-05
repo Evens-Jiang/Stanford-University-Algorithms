@@ -10,7 +10,7 @@ Dijkstra's algorithm
 #define SIZE 200
 typedef enum {FALSE = 0, TRUE} bool;
 
-int convertCharToInt(int *c, int digit){
+int convertCharToInt(char *c, int digit){
 	int number = 0, counter = digit, power = 0;
 	if(counter == 1)
 		return *c - 48;
@@ -26,38 +26,44 @@ int convertCharToInt(int *c, int digit){
 }
 
 void makeAdjacencyList(FILE *File, graph_p graph){
-	int v1, v2, digit = 1, distance;
-	int i = 0;
-	int c;
-	int temp[7] = {0};
+	int v1, v2, digit = 0, distance;
+	char c;
+	char temp[7];
 	bool v1Check = TRUE;
 	
-	while(feof(File)){
+	while(!feof(File)){
 		c = fgetc(File);
 		if(v1Check){
 			if(c == 9){
 				v1 = convertCharToInt(temp, digit);
-				digit = 1;
+//				printf("v1 = %d\n", v1);
+				digit = 0;
 				v1Check = FALSE;
 			}
-			else
+			else{
+				temp[digit] = c;
 				digit++;
+			}
 		}
 		else if(c == 10){
+//			printf("\n");
 			v1Check = TRUE;
 		}
 		else{
 			if(c == 9){
 				distance = convertCharToInt(temp, digit);
-				digit = 1;
+				digit = 0;
 				addEdge(graph, v1, v2, distance);
 			}
 			else if(c == 44){
 				v2 = convertCharToInt(temp, digit);
-				digit = 1;
+//				printf("%4d ", v2);
+				digit = 0;
 			}
-			else
+			else{
+				temp[digit] = c;
 				digit++;
+			}
 		}
 	}
 }
@@ -71,8 +77,10 @@ void main(){
 		printf("Open file successfully!\n\n");
 	
 	graph_p graph = createGraph(SIZE, DIRECTED);
+	printf("Graph created.\n\n");
+
 	makeAdjacencyList(inFile, graph);
-	
+	displayGraph(graph);
 	
 	fclose(inFile);
 }
