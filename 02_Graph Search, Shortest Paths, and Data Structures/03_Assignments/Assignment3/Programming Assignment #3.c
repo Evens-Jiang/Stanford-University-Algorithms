@@ -10,8 +10,10 @@
 */
 /*	
 	The median maintenance is 1213.
-	Running time is about 6.8 seconds. (Using min heap.)
-	Running time is about 12.1 seconds. (Naive method, using heap sort sorting the array every time.)
+	CPU: i5-6500
+	executing 100 times.
+	Average running time is about 3.902 seconds. (Using min heap.)
+	Average running time is about 7.252 seconds. (Naive method, using heap sort sorting the array every time.)
 */
 #include <stdio.h>
 #include <time.h>
@@ -20,38 +22,49 @@
 
 void swap(int *a, int *b);
 void min_heapify(int array[], int start, int end);
-//void heap_sort(int arr[], int len);
+// void heap_sort(int arr[], int len);
 void bubbleUp(int array[], int son);
 void bubbleDown(int array[], int end);
 int extractMin(int array[], int end);
 int medianMaintenance(int array[], int end);
 
-void main(void){
+double median(void){
 	clock_t begin = clock();
-    FILE *inFile = fopen("Median.txt", "r");
+	FILE *inFile = fopen("Median.txt", "r");
 	int array[SIZE] = {0};
 	int i = 0;
 	int sum = 0;
 	
-	if(!inFile)
-		printf("Fail to open file\n");
-	else
-		printf("Open file successfully!\n");
+	// if(!inFile)
+	// 	printf("Fail to open file\n");
+	// else
+	// 	printf("Open file successfully!\n");
 	
 	while(fscanf(inFile, "%d", &array[i]) != EOF){
-		//Median maintenance
+			/*Median maintenance*/
 		bubbleUp(array, i);
 		sum += medianMaintenance(array, i);
-		//Naive method
-//		heap_sort(array, i + 1);
-//		sum += array[i - i / 2];
+			/*Naive method*/
+		// heap_sort(array, i + 1);
+		// sum += array[i - i / 2];
 		i++;
 	}
 	sum = sum % 10000;
-    printf("Sum = %d\n", sum);
-    fclose(inFile);
+	// printf("Sum = %d\n", sum);
+	fclose(inFile);
 	clock_t end = clock();
-	printf("Running time = %.3f (sec)\n", (double)(end - begin) / CLOCKS_PER_SEC);
+	// printf("Running time = %.3f (sec)\n", (double)(end - begin) / CLOCKS_PER_SEC);
+	return (double)(end - begin) / CLOCKS_PER_SEC;
+}
+
+
+void main(void){
+	int i;
+	double sum = 0;
+	for(i = 0; i < 100; i++)
+		sum += median();
+	sum /= 100;
+	printf("Average Running Time = %.3f\n", sum);
 }
 
 void swap(int *a, int *b){
