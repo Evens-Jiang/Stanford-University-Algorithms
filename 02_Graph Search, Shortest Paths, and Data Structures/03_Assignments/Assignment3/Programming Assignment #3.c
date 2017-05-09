@@ -10,7 +10,8 @@
 */
 /*	
 	The median maintenance is 1213.
-	Running time is about 5.9 seconds.
+	Running time is about 6.8 seconds. (Using min heap.)
+	Running time is about 12.1 seconds. (Naive method, using heap sort sorting the array every time.)
 */
 #include <stdio.h>
 #include <time.h>
@@ -19,7 +20,9 @@
 
 void swap(int *a, int *b);
 void min_heapify(int array[], int start, int end);
+//void heap_sort(int arr[], int len);
 void bubbleUp(int array[], int son);
+void bubbleDown(int array[], int end);
 int extractMin(int array[], int end);
 int medianMaintenance(int array[], int end);
 
@@ -36,8 +39,12 @@ void main(void){
 		printf("Open file successfully!\n");
 	
 	while(fscanf(inFile, "%d", &array[i]) != EOF){
+		//Median maintenance
 		bubbleUp(array, i);
 		sum += medianMaintenance(array, i);
+		//Naive method
+//		heap_sort(array, i + 1);
+//		sum += array[i - i / 2];
 		i++;
 	}
 	sum = sum % 10000;
@@ -69,6 +76,16 @@ void min_heapify(int array[], int start, int end) {
 	}
 }
 
+/*void heap_sort(int arr[], int len) {
+	int i;
+	for (i = len / 2 - 1; i >= 0; i--)
+		min_heapify(arr, i, len - 1);
+	for (i = len - 1; i > 0; i--) {
+		swap(&arr[0], &arr[i]);
+		min_heapify(arr, 0, i - 1);
+	}
+}*/
+
 void bubbleUp(int array[], int son){
 	int dad;
 	while(son != 0){
@@ -85,10 +102,26 @@ void bubbleUp(int array[], int son){
 	return;
 }
 
+void bubbleDown(int array[], int end){
+	int dad = 0, son = dad * 2 + 1;
+	while(son <= end){
+		if(son + 1 <= end && array[son + 1] < array[son])
+			son = son + 1;
+		if(array[dad] > array[son])
+			swap(&array[dad], &array[son]);
+		else
+			return;
+		dad = son;
+		son = son * 2 + 1;
+	}
+	return;
+}
+
 int extractMin(int array[], int end){
 	int min = array[0];
 	swap(&array[0], &array[end]);
-	min_heapify(array, 0, end - 1);
+//	min_heapify(array, 0, end - 1);
+	bubbleDown(array, end - 1);
 	return min;
 }
 
