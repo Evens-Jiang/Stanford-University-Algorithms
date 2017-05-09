@@ -17,7 +17,3 @@
 5685
 
 1354
-
-Output (sum of medians modulo 10000):
-
-9335
