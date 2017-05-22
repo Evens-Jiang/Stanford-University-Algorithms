@@ -1,9 +1,126 @@
 /*
     2 Sum Algorithm.
+    
+    CPU: Duo E8400
+    Running time = 4597.308 (sec)
 */
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 #define SIZE 1000000
+#define PRIME 9973 
+
+typedef struct hash_table{
+    __int64 value;
+    struct hash_table *next;
+}hash_table, *hash_table_p;
+
+void addKey(int value, hash_table_p hashTablePtr){
+    hash_table_p tempPtr = hashTablePtr, newKey = (hash_table_p)malloc(sizeof(hash_table));
+    newKey->value = value;
+    newKey->next = NULL;
+    while(tempPtr != NULL)
+        tempPtr = tempPtr->next;
+    tempPtr = newKey;
+}
+
+int hash_function(__int64 value){
+    int result = value % 9973;
+    if(result >= 0)
+        return result;
+    else
+        return result + 9973;
+}
+
+int hash_findMatch(__int64 value, hash_table_p hashTablePtr){
+    hash_table_p tempPtr = hashTablePtr;
+    while(tempPtr != NULL){
+        if(tempPtr->value == value)
+            return 1;
+        else
+            tempPtr = tempPtr->next;
+    }
+    return 0;
+}
+    
+void swap_long(__int64 *a, __int64 *b);
+int partition(__int64 arr[], int left, int right, int pivotIndex);
+int medianOfThree(__int64 arr[], int left, int right);
+void quickSort(__int64 arr[], int left, int right);
+int findMatch(__int64 arr[], __int64 value, int firstPositiveIndex);
+
+void main(void){
+    FILE *inFile = fopen("2sum.txt", "r");
+    hash_table_p hashTable[PRIME];
+    __int64 array[SIZE] = {0}, value, match;
+    int i = 0, counter = 0, target = -10000, index;
+    if(!inFile)
+    	printf("Fail to open file\n");
+    else
+    	printf("Open file successfully!\n");
+    
+    for(i = 0; i < PRIME; i++)
+        hashTable[i] = NULL;
+    
+    while(fscanf(inFile, "%lld", &array[i]) != EOF){
+        index = hash_function(array[i]);
+//        printf("index = %d\n", index);
+        addKey(array[i], hashTable[index]);
+        i++;
+    }
+    printf("Hash table completed\n");
+    for(target = -10000; target <= 10000; target++){
+        for(i = 0; i < SIZE; i++){
+            match = target - array[i];
+            index = hash_function(match);
+            if(hash_findMatch(match, hashTable[index])){
+                counter++;
+                break;
+            }
+        }
+    }
+    printf("Counter = %d\n", counter);
+    fclose(inFile);
+}
+
+/*void main(void){
+    clock_t begin = clock();
+    FILE *inFile = fopen("2sum.txt", "r");
+    __int64 array[SIZE] = {0}, value;
+    int i = 0, counter = 0, target = -10000, temp;
+    int firstPositiveIndex = 0;
+    if(!inFile)
+    	printf("Fail to open file\n");
+    else
+    	printf("Open file successfully!\n");
+    
+    while(fscanf(inFile, "%lld", &array[i]) != EOF){
+        i++;
+    }
+    quickSort(array, 0, SIZE - 1);
+    for(i = 0; i < SIZE; i++){
+        if(array[i] + array[i + 1] > array[i]){
+            firstPositiveIndex = ++i;
+            break;
+        }
+    }
+    for(target = -10000; target <= 10000; target++){
+        for(i = 0; i < SIZE; i++){
+            value = target - array[i];
+		  	temp = counter;
+            counter += findMatch(array, value, firstPositiveIndex);
+		  	if(counter > temp){
+			  printf("array[%6d] = %lld\n       target = %d\n\n", i, array[i], target);
+			  break;
+			}
+        }
+    }
+    clock_t end = clock();
+    printf("Counter = %d\n", counter);
+    printf("Running time = %.3f (sec)\n", (double)(end - begin) / CLOCKS_PER_SEC);
+    fclose(inFile);
+}*/
 
 void swap_long(__int64 *a, __int64 *b){
   	__int64 tmp = *a;
@@ -50,9 +167,11 @@ int findMatch(__int64 arr[], __int64 value, int firstPositiveIndex){
         start = firstPositiveIndex;
         end = SIZE - 1;
         mid = (end - start) / 2 + start;
-        while(start < end){
-            if(arr[mid] == value)
+        while(start <= end){
+            if(arr[mid] == value){
+                printf("array[%6d] = %lld\n", mid, value);
                 return 1;
+			}
             else if(arr[mid] < value){
                 start = mid + 1;
                 mid = (end - start) / 2 + start;
@@ -68,9 +187,11 @@ int findMatch(__int64 arr[], __int64 value, int firstPositiveIndex){
         start = 0;
         end = firstPositiveIndex;
         mid = (end - start) / 2 + start;
-        while(start < end){
-            if(arr[mid] == value)
+        while(start <= end){
+            if(arr[mid] == value){
+                printf("array[%6d] = %lld\n", mid, value);
                 return 1;
+			}
             else if(arr[mid] < value){
                 start = mid + 1;
                 mid = (end - start) / 2 + start;
@@ -82,33 +203,4 @@ int findMatch(__int64 arr[], __int64 value, int firstPositiveIndex){
         }
         return 0;
     }
-}
-
-void main(void){
-    FILE *inFile = fopen("2sum.txt", "r");
-    __int64 array[SIZE] = {0}, value;
-    int i = 0, counter = 0, target = -10000;
-    int firstPositiveIndex = 0;
-    if(!inFile)
-    	printf("Fail to open file\n");
-    else
-    	printf("Open file successfully!\n");
-    
-    while(fscanf(inFile, "%lld", &array[i]) != EOF){
-        i++;
-    }
-    quickSort(array, 0, SIZE - 1);
-    for(i = 0; i < SIZE; i++){
-        if(array[i] + array[i + 1] > array[i])
-            firstPositiveIndex = ++i;
-            break;
-    }
-    for(target = -10000; target <= 10000; target++){
-        for(i = 0; i < SIZE; i++){
-            value = target - array[i];
-            counter += findMatch(array, value, firstPositiveIndex);
-        }
-    }
-    printf("i = %d", i + 1);
-    fclose(inFile);
 }
