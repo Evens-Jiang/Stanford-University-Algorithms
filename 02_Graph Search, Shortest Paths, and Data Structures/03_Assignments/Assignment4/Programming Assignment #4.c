@@ -1,7 +1,10 @@
 /*
     2 Sum Algorithm.
+    The answer is 427.
+    By using brutal force method, the running time = 1467.959 (sec).
 */
 #include <stdio.h>
+#include <time.h>
 
 #define SIZE 1000000
 
@@ -50,7 +53,7 @@ int findMatch(__int64 arr[], __int64 value, int firstPositiveIndex){
         start = firstPositiveIndex;
         end = SIZE - 1;
         mid = (end - start) / 2 + start;
-        while(start < end){
+        while(start <= end){
             if(arr[mid] == value)
                 return 1;
             else if(arr[mid] < value){
@@ -68,7 +71,7 @@ int findMatch(__int64 arr[], __int64 value, int firstPositiveIndex){
         start = 0;
         end = firstPositiveIndex;
         mid = (end - start) / 2 + start;
-        while(start < end){
+        while(start <= end){
             if(arr[mid] == value)
                 return 1;
             else if(arr[mid] < value){
@@ -85,9 +88,10 @@ int findMatch(__int64 arr[], __int64 value, int firstPositiveIndex){
 }
 
 void main(void){
+    clock_t begin = clock();
     FILE *inFile = fopen("2sum.txt", "r");
     __int64 array[SIZE] = {0}, value;
-    int i = 0, counter = 0, target = -10000;
+    int i = 0, counter = 0, target = -10000, temp;
     int firstPositiveIndex = 0;
     if(!inFile)
     	printf("Fail to open file\n");
@@ -106,9 +110,19 @@ void main(void){
     for(target = -10000; target <= 10000; target++){
         for(i = 0; i < SIZE; i++){
             value = target - array[i];
+            temp = counter;
             counter += findMatch(array, value, firstPositiveIndex);
+            if(counter > temp){
+                printf("array[%6d] = %lld\n", i, array[i]);
+                printf("value         = %lld\n", value);
+                printf("target        = %d\n\n", target);
+                break;
+            }
         }
     }
-    printf("i = %d", i + 1);
+
+    printf("counter = %d\n", counter);
+    clock_t end = clock();
+    printf("Running time = %.3f (sec)\n", (double)(end - begin) / CLOCKS_PER_SEC);
     fclose(inFile);
 }
