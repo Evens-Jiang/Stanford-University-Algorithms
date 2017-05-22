@@ -4,6 +4,7 @@
 # Text books, slildes, videos #
 *.pdf
 *.mp4
+*.vtt
 99_Text books
 01_Divide and Conquer, Sorting and Searching, and Randomized Algorithms/01_Slides
 01_Divide and Conquer, Sorting and Searching, and Randomized Algorithms/02_Videos

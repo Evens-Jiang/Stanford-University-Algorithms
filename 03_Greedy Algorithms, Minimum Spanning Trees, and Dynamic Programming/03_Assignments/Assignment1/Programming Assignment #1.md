@@ -21,13 +21,12 @@
     ADVICE: If you get the wrong answer, try out some small test cases to debug your algorithm (and post your test cases to the discussion forum).
 
 2。For this problem, use the same data set as in the previous problem.
-
-    Your task now is to run the greedy algorithm that schedules jobs (optimally) in decreasing order of the ratio (weight/length). In this algorithm, it does not matter how you break ties. You should report the sum of weighted completion times of the resulting schedule --- a positive integer --- in the box below.
-
+    Your task now is to run the greedy algorithm that schedules jobs (optimally) in decreasing order of the ratio (weight/length). 
+    In this algorithm, it does not matter how you break ties. 
+    You should report the sum of weighted completion times of the resulting schedule --- a positive integer --- in the box below.
+    
 3。In this programming problem you'll code up Prim's minimum spanning tree algorithm.
-
     Download the text file below.
-
     edges.txt
     This file describes an undirected graph with integer edge costs. It has the format
 
@@ -36,7 +35,6 @@
     [one_node_of_edge_1] [other_node_of_edge_1] [edge_1_cost]
 
     [one_node_of_edge_2] [other_node_of_edge_2] [edge_2_cost]
-
     For example, the third line of the file is "2 3 -8874", indicating that there is an edge connecting vertex #2 and vertex #3 that has cost -8874.
 
     You should NOT assume that edge costs are positive, nor should you assume that they are distinct.
