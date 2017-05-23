@@ -16,28 +16,64 @@
 #define SIZE 1000000
 #define PRIME 9973 
 
+/* Hash Table chaining */
 typedef struct hash_table{
     __int64 value;
     struct hash_table *next;
 }hash_table, *hash_table_p;
 
+void addKey(int value, hash_table_p hashTablePtr);
+int hash_function(__int64 value);
+int hash_findMatch(__int64 value, hash_table_p hashTablePtr);
+int hash_table_chaining(FILE *inFile);
+
+/* Brutal Force */    
+void swap_long(__int64 *a, __int64 *b);
+int partition(__int64 arr[], int left, int right, int pivotIndex);
+int medianOfThree(__int64 arr[], int left, int right);
+void quickSort(__int64 arr[], int left, int right);
+int findMatch(__int64 arr[], __int64 value, int firstPositiveIndex);
+int brutal_force(FILE *inFile);
+
+void main(void){
+    clock_t begin = clock();
+    FILE *inFile = fopen("2sum.txt", "r");
+    if(!inFile)
+    	printf("Fail to open file\n");
+    else
+    	printf("Open file successfully!\n");
+    
+//    int counter = brutal_force(inFile);
+    int counter = hash_table_chaining(inFile);
+    printf("Counter = %d\n", counter);
+    fclose(inFile);
+    
+    clock_t end = clock();
+    printf("Running time = %.3f (sec)\n", (double)(end - begin) / CLOCKS_PER_SEC);
+    return;
+}
+
+/* Hash Table chaining */
 void addKey(int value, hash_table_p hashTablePtr){
+    if(hashTablePtr->value == 0){
+        hashTablePtr->value = value;
+        return;
+    }
     hash_table_p tempPtr = hashTablePtr, newKey = (hash_table_p)malloc(sizeof(hash_table));
     newKey->value = value;
     newKey->next = NULL;
-    while(tempPtr != NULL)
+    while(tempPtr->next != NULL)
         tempPtr = tempPtr->next;
-    tempPtr = newKey;
+    tempPtr->next = newKey;
+    return;
 }
-
 int hash_function(__int64 value){
-    int result = value % 9973;
+    int result = value % PRIME;
     if(result >= 0)
         return result;
     else
-        return result + 9973;
+        return result + PRIME;
 }
-
 int hash_findMatch(__int64 value, hash_table_p hashTablePtr){
     hash_table_p tempPtr = hashTablePtr;
     while(tempPtr != NULL){
@@ -48,91 +84,49 @@ int hash_findMatch(__int64 value, hash_table_p hashTablePtr){
     }
     return 0;
 }
+int hash_table_chaining(FILE *inFile){
+    hash_table_p hashTable = (hash_table_p)malloc(PRIME * sizeof(hash_table));
+    __int64 array[SIZE] = {0}, match;
+    int i = 0, counter = 0, temp = 0, target = -10000, index;
     
-void swap_long(__int64 *a, __int64 *b);
-int partition(__int64 arr[], int left, int right, int pivotIndex);
-int medianOfThree(__int64 arr[], int left, int right);
-void quickSort(__int64 arr[], int left, int right);
-int findMatch(__int64 arr[], __int64 value, int firstPositiveIndex);
-
-void main(void){
-    FILE *inFile = fopen("2sum.txt", "r");
-    hash_table_p hashTable[PRIME];
-    __int64 array[SIZE] = {0}, value, match;
-    int i = 0, counter = 0, target = -10000, index;
-    if(!inFile)
-    	printf("Fail to open file\n");
-    else
-    	printf("Open file successfully!\n");
-    
-    for(i = 0; i < PRIME; i++)
-        hashTable[i] = NULL;
-    
+    for(i = 0; i < PRIME; i++){
+        hashTable[i].next = NULL;
+        hashTable[i].value = 0;
+    }
+    i = 0;
     while(fscanf(inFile, "%lld", &array[i]) != EOF){
         index = hash_function(array[i]);
-//        printf("index = %d\n", index);
-        addKey(array[i], hashTable[index]);
+        addKey(array[i], &hashTable[index]);
         i++;
     }
     printf("Hash table completed\n");
-    for(target = -10000; target <= 10000; target++){
+    for(target = -9874; target <= 10000; target++){
         for(i = 0; i < SIZE; i++){
             match = target - array[i];
             index = hash_function(match);
-            if(hash_findMatch(match, hashTable[index])){
+            if(hash_findMatch(match, &hashTable[index])){
+                temp = counter;
                 counter++;
+                printf("match = %lld\n", match);
+                printf("index = %d\n", index);
+                printf("counter = %d\n\n", counter);
+                printf("%d match\n\n", target);
                 break;
             }
         }
+        if(temp == counter)
+            printf("%d no match\n\n", target);
     }
-    printf("Counter = %d\n", counter);
-    fclose(inFile);
+    return counter;
 }
-/*
-void main(void){
-    clock_t begin = clock();
-    FILE *inFile = fopen("2sum.txt", "r");
-    __int64 array[SIZE] = {0}, value;
-    int i = 0, counter = 0, target = -10000, temp;
-    int firstPositiveIndex = 0;
-    if(!inFile)
-    	printf("Fail to open file\n");
-    else
-    	printf("Open file successfully!\n");
-    
-    while(fscanf(inFile, "%lld", &array[i]) != EOF){
-        i++;
-    }
-    quickSort(array, 0, SIZE - 1);
-    for(i = 0; i < SIZE; i++){
-        if(array[i] + array[i + 1] > array[i]){
-            firstPositiveIndex = ++i;
-            break;
-        }
-    }
-    for(target = -10000; target <= 10000; target++){
-        for(i = 0; i < SIZE; i++){
-            value = target - array[i];
-		  	temp = counter;
-            counter += findMatch(array, value, firstPositiveIndex);
-		  	if(counter > temp){
-			  printf("array[%6d] = %lld\n       target = %d\n\n", i, array[i], target);
-			  break;
-			}
-        }
-    }
-    clock_t end = clock();
-    printf("Counter = %d\n", counter);
-    printf("Running time = %.3f (sec)\n", (double)(end - begin) / CLOCKS_PER_SEC);
-    fclose(inFile);
-}
-*/
+
+
+/* Brutal force */
 void swap_long(__int64 *a, __int64 *b){
   	__int64 tmp = *a;
   	*a = *b;
   	*b = tmp;  
 }
-
 int partition(__int64 arr[], int left, int right, int pivotIndex){
 	__int64 pivotValue = arr[pivotIndex];
     int compareIndex = left + 1;
@@ -146,7 +140,6 @@ int partition(__int64 arr[], int left, int right, int pivotIndex){
 	swap_long(&(arr[--compareIndex]), &(arr[left]));
 	return compareIndex;
 }
-
 int medianOfThree(__int64 arr[], int left, int right){
 	int length = right - left + 1;
 	int mid = (length % 2) == 0 ? length / 2 + left : (length / 2) + left;
@@ -157,7 +150,6 @@ int medianOfThree(__int64 arr[], int left, int right){
 		return mid;
 	return right;
 }
-
 void quickSort(__int64 arr[], int left, int right){
 	if(right > left){
 		int newPivotIndex = partition(arr, left, right,	medianOfThree(arr, left, right));
@@ -165,7 +157,6 @@ void quickSort(__int64 arr[], int left, int right){
 		quickSort(arr, newPivotIndex + 1, right);
 	}
 }
-
 int findMatch(__int64 arr[], __int64 value, int firstPositiveIndex){
     int counter = 0, i = 0, start, end, mid;
     if(value > 0){
@@ -204,4 +195,31 @@ int findMatch(__int64 arr[], __int64 value, int firstPositiveIndex){
         }
         return 0;
     }
+}
+int brutal_force(FILE *inFile){
+    __int64 array[SIZE] = {0}, value;
+    int i = 0, counter = 0, target = -10000, temp;
+    int firstPositiveIndex = 0;
+    
+    while(fscanf(inFile, "%lld", &array[i]) != EOF)
+        i++;
+    quickSort(array, 0, SIZE - 1);
+    for(i = 0; i < SIZE; i++){
+        if(array[i] + array[i + 1] > array[i]){
+            firstPositiveIndex = ++i;
+            break;
+        }
+    }
+    for(target = -10000; target <= 10000; target++){
+        for(i = 0; i < SIZE; i++){
+            value = target - array[i];
+		  	temp = counter;
+            counter += findMatch(array, value, firstPositiveIndex);
+		  	if(counter > temp){
+			  printf("array[%6d] = %lld\n       target = %d\n\n", i, array[i], target);
+			  break;
+			}
+        }
+    }
+    return counter;
 }

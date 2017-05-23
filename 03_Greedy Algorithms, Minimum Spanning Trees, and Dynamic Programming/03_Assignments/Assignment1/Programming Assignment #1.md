@@ -20,12 +20,12 @@
 
     ADVICE: If you get the wrong answer, try out some small test cases to debug your algorithm (and post your test cases to the discussion forum).
 
-2。For this problem, use the same data set as in the previous problem.
+2. For this problem, use the same data set as in the previous problem.
     Your task now is to run the greedy algorithm that schedules jobs (optimally) in decreasing order of the ratio (weight/length). 
     In this algorithm, it does not matter how you break ties. 
     You should report the sum of weighted completion times of the resulting schedule --- a positive integer --- in the box below.
     
-3。In this programming problem you'll code up Prim's minimum spanning tree algorithm.
+3. In this programming problem you'll code up Prim's minimum spanning tree algorithm.
     Download the text file below.
     edges.txt
     This file describes an undirected graph with integer edge costs. It has the format
@@ -41,4 +41,5 @@
 
     Your task is to run Prim's minimum spanning tree algorithm on this graph. You should report the overall cost of a minimum spanning tree --- an integer, which may or may not be negative --- in the box below.
 
-    IMPLEMENTATION NOTES: This graph is small enough that the straightforward O(mn) time implementation of Prim's algorithm should work fine. OPTIONAL: For those of you seeking an additional challenge, try implementing a heap-based version. The simpler approach, which should already give you a healthy speed-up, is to maintain relevant edges in a heap (with keys = edge costs). The superior approach stores the unprocessed vertices in the heap, as described in lecture. Note this requires a heap that supports deletions, and you'll probably need to maintain some kind of mapping between vertices and their positions in the heap.
+    IMPLEMENTATION NOTES: 
+    This graph is small enough that the straightforward O(mn) time implementation of Prim's algorithm should work fine. OPTIONAL: For those of you seeking an additional challenge, try implementing a heap-based version. The simpler approach, which should already give you a healthy speed-up, is to maintain relevant edges in a heap (with keys = edge costs). The superior approach stores the unprocessed vertices in the heap, as described in lecture. Note this requires a heap that supports deletions, and you'll probably need to maintain some kind of mapping between vertices and their positions in the heap.
