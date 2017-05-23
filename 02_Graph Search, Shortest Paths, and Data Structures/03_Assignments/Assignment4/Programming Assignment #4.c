@@ -2,12 +2,19 @@
     2 Sum Algorithm.
 
     The answer is 427.
-    By using brutal force method:
+    Brutal force method:
     1. CPU: i5-6500
     Running time = 1467.959 (sec).
 
     2. CPU: Duo E8400
-    Running time = 4597.308 (sec)
+    Running time = 4597.308 (sec).
+    
+    Hash Table Chaing:
+    1. CPU: i5-6500
+    Running time =  (sec).
+
+    2. CPU: Duo E8400
+    Running time =  (sec).
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,7 +29,7 @@ typedef struct hash_table{
     struct hash_table *next;
 }hash_table, *hash_table_p;
 
-void addKey(int value, hash_table_p hashTablePtr);
+void addKey(__int64 value, hash_table_p hashTablePtr);
 int hash_function(__int64 value);
 int hash_findMatch(__int64 value, hash_table_p hashTablePtr);
 int hash_table_chaining(FILE *inFile);
@@ -54,7 +61,7 @@ void main(void){
 }
 
 /* Hash Table chaining */
-void addKey(int value, hash_table_p hashTablePtr){
+void addKey(__int64 value, hash_table_p hashTablePtr){
     if(hashTablePtr->value == 0){
         hashTablePtr->value = value;
         return;
@@ -100,21 +107,22 @@ int hash_table_chaining(FILE *inFile){
         i++;
     }
     printf("Hash table completed\n");
-    for(target = -9874; target <= 10000; target++){
+    for(target = -10000; target <= 10000; target++){
         for(i = 0; i < SIZE; i++){
             match = target - array[i];
             index = hash_function(match);
             if(hash_findMatch(match, &hashTable[index])){
-                temp = counter;
                 counter++;
                 printf("match = %lld\n", match);
-                printf("index = %d\n", index);
                 printf("counter = %d\n\n", counter);
-                printf("%d match\n\n", target);
                 break;
             }
         }
-        if(temp == counter)
+        if(temp < counter){
+            printf("%d match\n\n", target);
+            temp = counter;
+        }
+        else
             printf("%d no match\n\n", target);
     }
     return counter;
