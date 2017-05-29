@@ -2,8 +2,7 @@
     Minimum Spanning Tree: Prim's algorithm
     Adjacency list
     Priority queue(heap)
-    
-    
+    Minimum Spanning Tree Cost = -3612829.
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,11 +47,11 @@ void main(void){
         if(maxCost < cost)
             maxCost = cost;
     }
-    printf("Max cost = %d\n", maxCost);
     prim(graph, maxCost + 1);
     printf("Total cost = %d\n", TOTAL_COST);
+    // printf("NUMBER_OF_VISITED_NODE = %d\n", NUMBER_OF_VISITED_NODE);
     
-    displayGraph(graph);
+    // displayGraph(graph);
     destroyGraph(graph);
     
     fclose(inFile);
@@ -70,8 +69,9 @@ void swap_VertexQueue(vertexCost *a, vertexCost *b){
 void minHeapify(vertexCost vertexQueue[], int end){
 	int son = end, dad = son / 2;
 	while (son != 1) {
-		if (vertexQueue[son].cost < vertexQueue[dad].cost)
+		if (vertexQueue[son].cost < vertexQueue[dad].cost){
 			swap_VertexQueue(&vertexQueue[son], &vertexQueue[dad]);
+        }
         else
             return;
         son = dad;
@@ -81,43 +81,54 @@ void minHeapify(vertexCost vertexQueue[], int end){
 
 int insertHeap(vertexCost vertexQueue[], int end, int vertex, int cost){
     if(end + 1 <= NUMBER_OF_NODE){
-        end = end + 1;
+        end++;
         vertexQueue[end].vertex = vertex;
         vertexQueue[end].cost = cost;
         minHeapify(vertexQueue, end);
+        return end;
     }
-    return end;
+    else{
+        printf("end + 1 > NUMBER_OF_NODE\n");
+        return 0;
+    }
 }
 
 int extractMin(vertexCost vertexQueue[], bool finished[], int end){
-    for(int i = 1; i <= end; i++){
-        printf("(%3d, %3d, %5d)\n", i, vertexQueue[i].vertex, vertexQueue[i].cost);
-    }
-    swap_VertexQueue(&vertexQueue[1], &vertexQueue[NUMBER_OF_NODE - NUMBER_OF_VISITED_NODE]);
-    finished[vertexQueue[NUMBER_OF_NODE - NUMBER_OF_VISITED_NODE].vertex] = TRUE;
+    finished[vertexQueue[1].vertex] = TRUE;
+    int minVertex = vertexQueue[1].vertex, minCost = vertexQueue[1].cost;
+    // for(int i = 1; i <= end; i++){
+    //     printf("(%3d, %3d, %5d)\n", i, vertexQueue[i].vertex, vertexQueue[i].cost);
+    // }
+    // printf("vertex V = %d\n", vertexQueue[1].vertex);
+    // printf("vertex V cost = %d\n", vertexQueue[1].cost);
+    swap_VertexQueue(&vertexQueue[1], &vertexQueue[end]);
+    vertexQueue[end].vertex = -1;
+    vertexQueue[end].cost = 10000;
+    end--;
     int dad = 1, son = dad * 2;
     while(son < end){
-        if(vertexQueue[son + 1].cost < vertexQueue[son].cost && son + 1 <= end)
+        if(vertexQueue[son + 1].cost < vertexQueue[son].cost && son + 1 <= end){
             son++;
+        }
         if(vertexQueue[son].cost < vertexQueue[dad].cost){
             swap_VertexQueue(&vertexQueue[dad], &vertexQueue[son]);
             dad = son;
             son = dad * 2;
         }
         else{
-            TOTAL_COST += vertexQueue[NUMBER_OF_NODE - NUMBER_OF_VISITED_NODE].cost;
-            return vertexQueue[NUMBER_OF_NODE - NUMBER_OF_VISITED_NODE].vertex;
+            TOTAL_COST += minCost;
+            return minVertex;
         }
     }
-    TOTAL_COST += vertexQueue[end].cost;
-    return vertexQueue[NUMBER_OF_NODE - NUMBER_OF_VISITED_NODE].vertex;
+    TOTAL_COST += minCost;
+    return minVertex;
 }
 
 int updateQueue(graph_p graph, vertexCost vertexQueue[], bool visited[], bool finished[], int vertex, int end){
     adjlist_node_p nodePtr = (graph->adjListArr[vertex]).head;
     int i = 1;
-    while(nodePtr){
-        printf("nodePtr->vertex = %d\n", nodePtr->vertex);
+    while(nodePtr != NULL){
+        // printf("nodePtr->vertex = %d\n", nodePtr->vertex);
         if(finished[nodePtr->vertex]){
             nodePtr = nodePtr->next;
             continue;
@@ -125,7 +136,7 @@ int updateQueue(graph_p graph, vertexCost vertexQueue[], bool visited[], bool fi
         if(visited[nodePtr->vertex]){
             while(vertexQueue[i].vertex != nodePtr->vertex)
                 i++;
-            if(vertexQueue[i].cost < nodePtr->cost)
+            if(vertexQueue[i].cost > nodePtr->cost)
                 vertexQueue[i].cost = nodePtr->cost;
             minHeapify(vertexQueue, i);
             i = 1;
@@ -149,6 +160,7 @@ void prim(graph_p graph, int maxCost){
         vertexQueue[i].vertex = -1;
         vertexQueue[i].cost = maxCost;
         visited[i] = FALSE;
+        finished[i] = FALSE;
     }
     vertexQueue[NUMBER_OF_NODE].vertex = vertexV;
     vertexQueue[NUMBER_OF_NODE].cost = 0;
@@ -156,18 +168,16 @@ void prim(graph_p graph, int maxCost){
     visited[vertexV] = TRUE;
     finished[vertexV] = TRUE;
     end = updateQueue(graph, vertexQueue, visited, finished, vertexV, end);
-    printf("end = %d\n", end);
-    vertexV = extractMin(vertexQueue, visited, end);
+    // printf("end = %d\n", end);
+    vertexV = extractMin(vertexQueue, finished, end);
     NUMBER_OF_VISITED_NODE++;
-    printf("vertex V = %d\n", vertexV);
     end--;
     while(end != 0){
         end = updateQueue(graph, vertexQueue, visited, finished, vertexV, end);
-        printf("end = %d\n", end);
-        vertexV = extractMin(vertexQueue, visited, end);
+        vertexV = extractMin(vertexQueue, finished, end);
         NUMBER_OF_VISITED_NODE++;
-        printf("vertex V = %d\n", vertexV);
         end--;
+        // printf("end = %d\n", end);
     }
     return;
 }
