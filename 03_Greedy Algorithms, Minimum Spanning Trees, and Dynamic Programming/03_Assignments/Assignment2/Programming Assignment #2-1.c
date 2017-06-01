@@ -19,7 +19,7 @@
 /*
     Maximum spacing = 106.
     1. CPU: i5-6500
-    Running time =  (sec).
+    Running time = 0.112(sec).
 
     2. CPU: Duo E8400
     Running time = 0.197(sec).
