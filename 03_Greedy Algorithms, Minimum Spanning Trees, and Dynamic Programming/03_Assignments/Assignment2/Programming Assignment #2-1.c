@@ -16,6 +16,14 @@
                     - Add i to T
         - Return T
 */
+/*
+    Maximum spacing = 106.
+    1. CPU: i5-6500
+    Running time =  (sec).
+
+    2. CPU: Duo E8400
+    Running time = 0.197(sec).
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -52,28 +60,24 @@ void main(void){
         edges[i].cost = cost;
         i++;
     }
-    printf("Completed add edges.\n");
     
     quickSort(edges, 0, numberOfEdges - 1);
-    for(i = 0; i <= 10; i++){
-        printf("%3d %3d %4d\n", edges[i].vertex1, edges[i].vertex2, edges[i].cost);
-    }
-    printf("Completed quick sort.\n");
 
-    vertex_p vertices = malloc(numberOfNodes * sizeof(vertex_t));
-    for(i = 0; i < numberOfNodes; i++)
+    vertex_p vertices = malloc((numberOfNodes + 1) * sizeof(vertex_t));
+    for(i = 0; i <= numberOfNodes; i++)
         MakeSet(&vertices[i]);
-    printf("Completed make set.\n");
     
     numberOfClusters = numberOfNodes;
     i = 0;
     while(numberOfClusters >= CLUSTER && i < numberOfEdges){
+//        printf("edge cost = %d\n", edges[i].cost);
+//        printf("vertex1 = %d vertex2 = %d\n", edges[i].vertex1, edges[i].vertex2);
         numberOfClusters = Union(&vertices[edges[i].vertex1], &vertices[edges[i].vertex2], numberOfClusters);
-        printf("vertices[%3d] = %p\n", edges[i].vertex1, vertices[edges[i].vertex1]);
-        printf("vertices[%3d].parent = %p\n", edges[i].vertex1, vertices[edges[i].vertex1].parent);
-        printf("vertices[%3d] = %p\n", edges[i].vertex2, vertices[edges[i].vertex2]);
-        printf("vertices[%3d].parent = %p\n", edges[i].vertex2, vertices[edges[i].vertex2].parent);
-        printf("cluster = %d\n\n", numberOfClusters);
+//        printf("vertices[%3d] = %p rank = %d\n", edges[i].vertex1, &vertices[edges[i].vertex1], vertices[edges[i].vertex1].rank);
+//        printf("vertices[%3d].parent = %p rank = %d\n", edges[i].vertex1, Find(&vertices[edges[i].vertex1]), (Find(&vertices[edges[i].vertex1]))->rank);
+//        printf("vertices[%3d] = %p rank = %d\n", edges[i].vertex2, &vertices[edges[i].vertex2], vertices[edges[i].vertex2].rank);
+//        printf("vertices[%3d].parent = %p rank = %d\n", edges[i].vertex2, Find(&vertices[edges[i].vertex2]), (Find(&vertices[edges[i].vertex2]))->rank);
+//        printf("cluster = %d i = %d\n\n", numberOfClusters, i);
         i++;
     }
     printf("Maximum spacing = %d\n", edges[i].cost);

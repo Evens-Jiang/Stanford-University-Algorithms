@@ -20,12 +20,10 @@ vertex_p Find(vertex_p vertex){
     return vertex->parent;
 }
 int Union(vertex_p vertex1, vertex_p vertex2, int numberOfCluster){
-    vertex_p vertexRoot1 = Find(vertex1);
-    vertex_p vertexRoot2 = Find(vertex2);
+    vertex_p vertexRoot1 = Find(vertex1), vertexRoot2 = Find(vertex2);
     
-    if(vertexRoot1 == vertexRoot2){
+    if(vertexRoot1 == vertexRoot2)
         return numberOfCluster;
-    }
     
     if(vertexRoot1->rank < vertexRoot2->rank)
         vertexRoot1->parent = vertexRoot2;
