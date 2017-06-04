@@ -1,29 +1,3 @@
-/*
-    Clustering Algorithm:
-        - Initially, each point in a separate cluster
-        - Repeat until only k clusters:
-            - Let p, q = closest pair of separated points (determines the current spacing)
-            - Merge the clusters containing p & q into a single cluster.
-    (Maximum spacing: the minimum distance between nodes in different clusters.)
-    Number of clusters k = 4.
-*/
-/*
-    Kruskal's MST Algorithm:
-        - Sort edges in order of increasing cost. (O(mlog n), recall m = O(n^2) assuming non-parallel edges)
-        - T = empty
-            - For i = 1 to m (O(m) iterations)
-                - If T U {i} has no cycles (O(n) time to check for cycle [Use BFS or DFS in the graph (V, T) which contains <= n - 1 edges])
-                    - Add i to T
-        - Return T
-*/
-/*
-    Maximum spacing = 106.
-    1. CPU: i5-6500
-    Running time =  (sec).
-
-    2. CPU: Duo E8400
-    Running time = 0.197(sec).
-*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -36,11 +10,11 @@ int mergeOrNot(vertex_p vertex1, vertex_p vertex2, int numberOfClusters, int cos
 
 void main(void){
     clock_t begin = clock();
-    FILE *inFile = fopen("clustering_big.txt", "r");
+    FILE *inFile = fopen("test_case_part2.txt", "r");
     int numberOfNodes, numberOfClusters, numberOfBitsPerLable, i = 0, j = 0;
     __int64 numberOfEdges, positionVertex1, positionVertex2;
     int *hammingVertex1, *hammingVertex2;
-    int vertex1, vertex2, cost;
+    int vertex1, vertex2, cost, temp;
     
     if(!inFile){
     	printf("Fail to open file\n");
@@ -67,29 +41,28 @@ void main(void){
         MakeSet(&vertices[i]);
     
     for(vertex1 = 1; vertex1 <= numberOfNodes; vertex1++){
-        positionVertex1 = (vertex1 * 49) - 39;
+        positionVertex1 = (vertex1 * 21) - 15;
         fseek(inFile , positionVertex1, SEEK_SET);
         readHammingDistance(inFile, hammingVertex1, numberOfBitsPerLable);
 //        printf("\nvertex1\n");
 //        outputVertexInfo(vertex1, positionVertex1, hammingVertex1);
         for(vertex2 = vertex1 + 1; vertex2 <= numberOfNodes; vertex2++){
-            positionVertex2 = (vertex2 * 49) - 39;
+            positionVertex2 = (vertex2 * 21) - 15;
             fseek(inFile , positionVertex2, SEEK_SET);
             readHammingDistance(inFile, hammingVertex2, numberOfBitsPerLable);
 //            outputVertexInfo(vertex2, positionVertex2, hammingVertex2);
             cost = decodeHammingDistance(hammingVertex1, hammingVertex2, numberOfBitsPerLable);
-//            printf("\ncost = %d\n", cost);
+            temp = numberOfClusters;
             numberOfClusters = mergeOrNot(&vertices[vertex1], &vertices[vertex2], numberOfClusters, cost);
 //            printf("numberOfClusters = %d\n", numberOfClusters);
-//            if(numberOfClusters < numberOfNodes){
-//                outputVertexInfo(vertex2, positionVertex2, hammingVertex2);
-//                printf("\ncost = %d\n", cost);
-//                return;
-//            }
+           if(numberOfClusters < temp){
+                printf("temp = %d\n", temp);
+                printf("\ncost = %d\n", cost);
+           }
         }
     }
 
-    printf("Number Of Clusters = %d", numberOfClusters);
+    printf("Number Of Clusters = %d\n", numberOfClusters);
     fclose(inFile);
     clock_t end = clock();
     printf("Running time = %.3f (sec)\n", (double)(end - begin) / CLOCKS_PER_SEC);
