@@ -1,4 +1,30 @@
 /*
+	Pseudo code from discussion forum(https://www.coursera.org/learn/algorithms-greedy/discussions/weeks/2/threads/OctNCeS_Eeao1BJzfLTSbg)
+	For each vertex (200K iterations):
+  		For each code that is 0 units apart from 
+  		this vertex: (1 iteration - there is only one such code
+  		which is the same code as that of the vertex itself)
+		    - Use the code to index into the hash table and 
+		      get the corresponding vertexes if they exist. 
+		    - Add these 2 vertexes to a cluster.
+    
+	For each vertex (200K iterations):
+  		For each code that is 1 unit apart from 
+  		this vertex: (24 iterations)
+		    - Use the code to index into the hash table and 
+		      get the corresponding vertexes if they exist. 
+		    - Add these 2 vertexes to a cluster.
+    
+	For each vertex (200K iterations):
+	  	For each code that is 2 units apart from
+	  	this vertex: (276 iterations)
+		    - Use the code to index into the hash table and 
+		      get the corresponding vertexes if they exist.
+		    - Add these 2 vertexes to a cluster.
+    
+	You are now left with clusters that are at least 3 units apart.
+*/
+/*
 	Number Of Clusters = 6118.
 	CPU: i5-6500
 	Running time = 126.578 (sec)
