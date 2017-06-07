@@ -1,3 +1,20 @@
+/*
+	Huffman's Algorithm
+	(Given frequencies Pi as input)
+	If |∑| = 2 return
+
+		   Node
+		0 /	  \ 1
+		 A     B
+
+	Let a, b belong to ∑ have the smallest frequencies.
+	Let ∑' = ∑ with a, b replaced by new symbol ab.
+	Define Pab = Pa + Pb.
+	Recursively compute T' (for the alphabet ∑')
+	Extend T' (with leaves ←→ ∑') to a tree T with leaves ←→ ∑ by splitting leaf ab into two leaves a & b.
+
+	Return T
+*/
 #ifndef _HUFFMANCODE_H_
 #define _HUFFMANCODE_H_
 
