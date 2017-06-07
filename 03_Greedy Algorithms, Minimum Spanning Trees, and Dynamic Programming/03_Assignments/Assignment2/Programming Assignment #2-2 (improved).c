@@ -26,9 +26,12 @@
 */
 /*
 	Number Of Clusters = 6118.
-	CPU: i5-6500
-	Running time = 126.578 (sec)
+	1. CPU: i5-6500
+	   Running time = 126.578 (sec)
+    2. CPU: Duo E8400
+	   Running time = 173.927 (sec)
 */
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
