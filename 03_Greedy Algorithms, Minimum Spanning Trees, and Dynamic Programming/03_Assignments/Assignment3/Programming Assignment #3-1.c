@@ -57,6 +57,8 @@ void main(void){
 
     printf("totalWeight = %lld\n", totalWeight);
     heap_sort(huffmanNode, numberOfSymbols);
+
+    /* i represents the count of merges. */
     i = numberOfSymbols - 1;
     while(i != 0){
         huffman_node_p newNode1 = malloc(sizeof(huffman_node_t)),  newNode2 = malloc(sizeof(huffman_node_t));
@@ -67,9 +69,11 @@ void main(void){
         huffmanNode[0].left = newNode1;
         huffmanNode[0].right = newNode2;
         swap(&huffmanNode[i], &huffmanNode[1]);
+        /* we need to pass the length of array to heap_sort, not the number. */
         heap_sort(huffmanNode, i);
         i--;
     }
+    /* Check the weight of the last node. */
     printf("i = 0 weight = %lld\n", huffmanNode[0].weight);
 
     printf("Max = %d\n", findMax(&huffmanNode[0]));
