@@ -24,7 +24,6 @@
                     m[i, j] := m[i-1, j]
                 else:
                     m[i, j] := max(m[i-1, j], m[i-1, j-w[i]] + v[i])
-    The maximum value = 2493893.
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,11 +31,16 @@
 
 #define max(x, y) (x > y) ? x : y;
 
+typedef struct max_value_node{
+    int value, weight;
+    struct max_value_node *next;
+}max_value_node_t, *max_value_node_p;
+
 int findMaxValue(FILE *inFile, int knapsackSize, int numberOfItems);  
 
 void main(void){
     clock_t begin = clock();
-    FILE *inFile = fopen("knapsack1.txt", "r");
+    FILE *inFile = fopen("knapsack2.txt", "r");
     int knapsackSize, numberOfItems;
     
     if(!inFile){
@@ -56,6 +60,14 @@ void main(void){
     clock_t end = clock();
     printf("Running time = %.3f (sec)\n", (double)(end - begin) / CLOCKS_PER_SEC);
     return;
+}
+
+max_value_node_p createMaxValueNode(int value, int weight){
+    max_value_node_p newNode = malloc(sizeof(max_value_node_t));
+    newNode->value = value;
+    newNode->weight = weight;
+    newNode->next = NULL;
+    return newNode;
 }
 
 int findMaxValue(FILE *inFile, int knapsackSize, int numberOfItems){
@@ -81,11 +93,9 @@ int findMaxValue(FILE *inFile, int knapsackSize, int numberOfItems){
             printf("Malloc maximum value(maximumValue[%d]) failed.\n", i);
             return 0;
         }
-    /* Set default value in maximumValue */
     for(item = 0; item <= numberOfItems; item++)
         for(maxWeight = 0; maxWeight <= knapsackSize; maxWeight++)
             maximumValue[item][maxWeight] = 0;
-    /* Iteration for subproblems */
     for(item = 1; item <= numberOfItems; item++)
         for(maxWeight = 0; maxWeight <= knapsackSize; maxWeight++){
             if(weight[item] > maxWeight)
@@ -93,5 +103,19 @@ int findMaxValue(FILE *inFile, int knapsackSize, int numberOfItems){
             else
                 maximumValue[item][maxWeight] = max(maximumValue[item - 1][maxWeight], maximumValue[item - 1][maxWeight - weight[item]] + value[item]);
         }
+    printf("w\\i ");
+    for(i = 0; i <= numberOfItems; i++)
+        printf("%3d ", i);
+    printf("\n\n");
+    for(maxWeight = 0; maxWeight <= knapsackSize; maxWeight++){
+        for(i = 0; i <= numberOfItems; i++){
+            if(i == 0)
+                printf("%3d ", maxWeight);
+            printf("%3d ", maximumValue[i][maxWeight]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+    
     return maximumValue[numberOfItems][knapsackSize];
 }

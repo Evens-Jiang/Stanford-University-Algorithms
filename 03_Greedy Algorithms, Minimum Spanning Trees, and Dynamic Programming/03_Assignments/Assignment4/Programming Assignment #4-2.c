@@ -7,24 +7,6 @@
     * m[i, w] = m[i - 1, w] if wi > w (the new item is more than the current weight limit)
     * m[i, w] = max(m[i - 1, w], m[i - 1, w - wi] + vi) if wi <= w 
     The solution can then be found by calculating m[n, W].
-    
-    Pseudocode:
-        // Input:
-        // Values (stored in array v)
-        // Weights (stored in array w)
-        // Number of distinct items (n)
-        // Knapsack capacity (W)
-
-        for j from 0 to W do:
-            m[0, j] := 0
-
-        for i from 1 to n do:
-            for j from 0 to W do:
-                if w[i] > j then:
-                    m[i, j] := m[i-1, j]
-                else:
-                    m[i, j] := max(m[i-1, j], m[i-1, j-w[i]] + v[i])
-    The maximum value = 2493893.
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,11 +14,12 @@
 
 #define max(x, y) (x > y) ? x : y;
 
+int maxValueRecursion(int item, int maxWeight, int *weight, int *value, int **maximumValue);
 int findMaxValue(FILE *inFile, int knapsackSize, int numberOfItems);  
 
 void main(void){
     clock_t begin = clock();
-    FILE *inFile = fopen("knapsack1.txt", "r");
+    FILE *inFile = fopen("knapsack_big.txt", "r");
     int knapsackSize, numberOfItems;
     
     if(!inFile){
@@ -58,6 +41,18 @@ void main(void){
     return;
 }
 
+int maxValueRecursion(int item, int maxWeight, int *weight, int *value, int **maximumValue){
+    if(maximumValue[item][maxWeight] != -1)
+        return maximumValue[item][maxWeight];
+    if(item == 0 || maxWeight == 0)
+        return 0;
+    if(weight[item] > maxWeight){
+        maximumValue[item][maxWeight] = maxValueRecursion(item - 1, maxWeight, weight, value, maximumValue);
+        return maximumValue[item][maxWeight];
+    }
+    maximumValue[item][maxWeight] = max(maxValueRecursion(item - 1, maxWeight, weight, value, maximumValue), maxValueRecursion(item - 1, maxWeight - weight[item], weight, value, maximumValue) + value[item]);
+    return maximumValue[item][maxWeight];
+}
 int findMaxValue(FILE *inFile, int knapsackSize, int numberOfItems){
     int i = 1, item, maxWeight, **maximumValue, *weight, *value;
     
@@ -83,15 +78,13 @@ int findMaxValue(FILE *inFile, int knapsackSize, int numberOfItems){
         }
     /* Set default value in maximumValue */
     for(item = 0; item <= numberOfItems; item++)
-        for(maxWeight = 0; maxWeight <= knapsackSize; maxWeight++)
-            maximumValue[item][maxWeight] = 0;
-    /* Iteration for subproblems */
-    for(item = 1; item <= numberOfItems; item++)
         for(maxWeight = 0; maxWeight <= knapsackSize; maxWeight++){
-            if(weight[item] > maxWeight)
-                maximumValue[item][maxWeight] = maximumValue[item - 1][maxWeight];
+            if(item == 0 || maxWeight == 0)
+                maximumValue[item][maxWeight] = 0;
             else
-                maximumValue[item][maxWeight] = max(maximumValue[item - 1][maxWeight], maximumValue[item - 1][maxWeight - weight[item]] + value[item]);
+                maximumValue[item][maxWeight] = -1;
         }
-    return maximumValue[numberOfItems][knapsackSize];
+
+    printf("Start recursion...\n\n");
+    return maxValueRecursion(numberOfItems, knapsackSize, weight, value, maximumValue);
 }
