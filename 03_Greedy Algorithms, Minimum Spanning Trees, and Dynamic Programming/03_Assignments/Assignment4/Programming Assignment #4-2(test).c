@@ -24,6 +24,9 @@
                     m[i, j] := m[i-1, j]
                 else:
                     m[i, j] := max(m[i-1, j], m[i-1, j-w[i]] + v[i])
+                    
+    Maximum Value = 4243395
+    Running time = 20714.998 (sec)
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,15 +35,24 @@
 #define max(x, y) (x > y) ? x : y;
 
 typedef struct max_value_node{
-    int value, weight;
+    int weight;
+    __int64 value;
     struct max_value_node *next;
 }max_value_node_t, *max_value_node_p;
 
-int findMaxValue(FILE *inFile, int knapsackSize, int numberOfItems);  
+typedef struct max_value_head{
+    int numberOfNode;
+    max_value_node_p head;
+}max_value_head_t, *max_value_head_p;
+
+max_value_node_p createMaxValueNode(int value, int weight);
+max_value_head_p createMaxValueHead(int numberOfItems);
+__int64 findValue(max_value_head_p maximumValue, int item, int maxWeight);
+int findMaxValue(FILE *inFile, int knapsackSize, int numberOfItems);
 
 void main(void){
     clock_t begin = clock();
-    FILE *inFile = fopen("knapsack2.txt", "r");
+    FILE *inFile = fopen("knapsack_big.txt", "r");
     int knapsackSize, numberOfItems;
     
     if(!inFile){
@@ -70,8 +82,33 @@ max_value_node_p createMaxValueNode(int value, int weight){
     return newNode;
 }
 
+max_value_head_p createMaxValueHead(int numberOfItems){
+    max_value_head_p newHead;
+    if((newHead = malloc((numberOfItems + 1) * sizeof(max_value_head_t))) == NULL){
+        printf("Malloc max value head array failed.\n");
+        return 0;
+    }
+    int i = 0;
+    for(i = 0; i <= numberOfItems; i++){
+        newHead[i].numberOfNode = 1;
+        newHead[i].head = createMaxValueNode(0, 0);
+    }
+    return newHead;
+}
+
+__int64 findValue(max_value_head_p maximumValue, int item, int maxWeight){
+    if(item == 0 || maxWeight == 0)
+        return 0;
+    max_value_node_p nodePtr = maximumValue[item].head;
+    while(nodePtr->weight > maxWeight && nodePtr->next != NULL)
+        nodePtr = nodePtr->next;
+    return nodePtr->value;
+}
+
 int findMaxValue(FILE *inFile, int knapsackSize, int numberOfItems){
-    int i = 1, item, maxWeight, **maximumValue, *weight, *value;
+    int i = 1, item, maxWeight, *weight, *value, tempValue;
+    max_value_head_p maximumValue;
+    max_value_node_p newNodePtr;
     
     if((weight = malloc((numberOfItems + 1) * sizeof(int))) == NULL){
         printf("Malloc weight failed.\n");
@@ -84,38 +121,40 @@ int findMaxValue(FILE *inFile, int knapsackSize, int numberOfItems){
     value[0] = weight[0] = 0;
     while(fscanf(inFile, "%d %d", &value[i], &weight[i]) != EOF)
         i++;
-    if((maximumValue = malloc((numberOfItems + 1) * sizeof(int*))) == NULL){
-        printf("Malloc maximum value(items) failed.\n");
-        return 0;
-    }
-    for(i = 0; i <= numberOfItems; i++)
-        if((maximumValue[i] = malloc((knapsackSize + 1) * sizeof(int))) == NULL){
-            printf("Malloc maximum value(maximumValue[%d]) failed.\n", i);
-            return 0;
-        }
-    for(item = 0; item <= numberOfItems; item++)
-        for(maxWeight = 0; maxWeight <= knapsackSize; maxWeight++)
-            maximumValue[item][maxWeight] = 0;
+    maximumValue = createMaxValueHead(numberOfItems);
+
     for(item = 1; item <= numberOfItems; item++)
         for(maxWeight = 0; maxWeight <= knapsackSize; maxWeight++){
-            if(weight[item] > maxWeight)
-                maximumValue[item][maxWeight] = maximumValue[item - 1][maxWeight];
-            else
-                maximumValue[item][maxWeight] = max(maximumValue[item - 1][maxWeight], maximumValue[item - 1][maxWeight - weight[item]] + value[item]);
+            if(weight[item] > maxWeight){
+                tempValue = findValue(maximumValue, item - 1, maxWeight);
+                if(tempValue > (maximumValue[item].head)->value){
+                    newNodePtr = createMaxValueNode(tempValue, maxWeight);
+                    newNodePtr->next = maximumValue[item].head;
+                    maximumValue[item].head = newNodePtr;
+                }
+            }
+            else{
+                tempValue = max(findValue(maximumValue, item - 1, maxWeight), findValue(maximumValue, item - 1, maxWeight - weight[item]) + (__int64)value[item]);
+                if(tempValue > (maximumValue[item].head)->value){
+                    newNodePtr = createMaxValueNode(tempValue, maxWeight);
+                    newNodePtr->next = maximumValue[item].head;
+                    maximumValue[item].head = newNodePtr;
+                }
+            }
         }
-    printf("w\\i ");
-    for(i = 0; i <= numberOfItems; i++)
-        printf("%3d ", i);
-    printf("\n\n");
-    for(maxWeight = 0; maxWeight <= knapsackSize; maxWeight++){
-        for(i = 0; i <= numberOfItems; i++){
-            if(i == 0)
-                printf("%3d ", maxWeight);
-            printf("%3d ", maximumValue[i][maxWeight]);
-        }
-        printf("\n");
-    }
-    printf("\n");
+//    printf("w\\i ");
+//    for(i = 0; i <= numberOfItems; i++)
+//        printf("%3d ", i);
+//    printf("\n\n");
+//    for(maxWeight = 0; maxWeight <= knapsackSize; maxWeight++){
+//        for(i = 0; i <= numberOfItems; i++){
+//            if(i == 0)
+//                printf("%3d ", maxWeight);
+//            printf("%3d ", maximumValue[i][maxWeight]);
+//        }
+//        printf("\n");
+//    }
+//    printf("\n");
     
-    return maximumValue[numberOfItems][knapsackSize];
+    return (maximumValue[numberOfItems].head)->value;
 }
