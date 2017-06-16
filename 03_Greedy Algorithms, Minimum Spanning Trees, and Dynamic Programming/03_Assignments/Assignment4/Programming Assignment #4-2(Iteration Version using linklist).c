@@ -24,6 +24,8 @@
                     m[i, j] := m[i-1, j]
                 else:
                     m[i, j] := max(m[i-1, j], m[i-1, j-w[i]] + v[i])
+*/
+/*
     CPU: Duo E8400                
     Maximum Value = 4243395
     Running time = 20714.998 (sec)
@@ -52,7 +54,7 @@ __int64 findMaxValue(FILE *inFile, int knapsackSize, int numberOfItems);
 
 void main(void){
     clock_t begin = clock();
-    FILE *inFile = fopen("knapsack1.txt", "r");
+    FILE *inFile = fopen("knapsack2.txt", "r");
     int knapsackSize, numberOfItems;
     
     if(!inFile){
@@ -66,7 +68,7 @@ void main(void){
     printf("Knapsack Size = %d\n", knapsackSize);
     printf("Number Of Items = %d\n", numberOfItems);
 
-    printf("Maximum Value = %d\n", findMaxValue(inFile, knapsackSize, numberOfItems));
+    printf("Maximum Value = %lld\n", findMaxValue(inFile, knapsackSize, numberOfItems));
 
     fclose(inFile);
     clock_t end = clock();
@@ -123,7 +125,7 @@ __int64 findMaxValue(FILE *inFile, int knapsackSize, int numberOfItems){
         i++;
     maximumValue = createMaxValueHead(numberOfItems);
 
-    for(item = 1; item <= numberOfItems; item++)
+    for(item = 1; item <= numberOfItems; item++){
         for(maxWeight = 1; maxWeight <= knapsackSize; maxWeight++){
             if(weight[item] > maxWeight){
                 tempValue = findValue(maximumValue, item - 1, maxWeight);
@@ -142,6 +144,6 @@ __int64 findMaxValue(FILE *inFile, int knapsackSize, int numberOfItems){
                 }
             }
         }
-    
+    }
     return (maximumValue[numberOfItems].head)->value;
 }
