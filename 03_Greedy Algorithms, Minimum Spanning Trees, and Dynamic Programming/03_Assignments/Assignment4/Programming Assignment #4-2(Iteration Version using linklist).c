@@ -26,8 +26,11 @@
                     m[i, j] := max(m[i-1, j], m[i-1, j-w[i]] + v[i])
 */
 /*
-    CPU: Duo E8400                
     Maximum Value = 4243395
+    
+    1. CPU: i5-6500
+    Running time = 14374.508 (sec)
+    2. CPU: Duo E8400
     Running time = 20714.998 (sec)
 */
 #include <stdio.h>

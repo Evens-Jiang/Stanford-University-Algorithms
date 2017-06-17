@@ -34,8 +34,11 @@
         current = 1 - current;
 */
 /*
-    CPU: Duo E8400 
     Maximum Value = 4243395
+    
+    1. CPU: i5-6500
+    Running time = 21.849 (sec)
+    2. CPU: Duo E8400 
     Running time = 51.839 (sec)
 */
 #include <stdio.h>
