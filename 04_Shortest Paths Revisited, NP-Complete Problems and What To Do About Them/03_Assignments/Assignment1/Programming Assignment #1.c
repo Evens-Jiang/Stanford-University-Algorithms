@@ -6,7 +6,7 @@
     Shortest path of g3 = -19.
     
     1. CPU: i5-6500
-        Running time =  (sec)
+        Running time = 5.550 (sec)
 	2. CPU: Duo E8400
         Running time = 11.478 (sec)
 */

@@ -1,0 +1,1 @@
+Recall the asynchronous version of the Bellman-Ford algorithm discussed in the "Internet Routing" lectures. Prove that, in the worst case, this algorithm requires an exponential number of iterations to converge.
