@@ -1,6 +1,6 @@
 /*
-    Bellman-Ford Algorithm.
-    All-pairs shortest path algorithm.
+    Bellman-Ford Algorithm for detecting negative cycle.
+    Floyd-Warshall Algorithm for all-pairs shortest path.
     
     g1 & g2 both have negative cycles.
     Shortest path of g3 = -19.
