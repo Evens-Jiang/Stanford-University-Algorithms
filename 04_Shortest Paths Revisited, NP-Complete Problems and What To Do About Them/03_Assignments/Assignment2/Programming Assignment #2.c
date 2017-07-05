@@ -13,17 +13,20 @@
             C(S, i) = min { C(S-{i}, j) + dis(j, i)}, where j belongs to S, j != i and j != 1.
 */
 /*
-    number of city = 4
+    Example of citySet
+    Number of cities = 4
+    (citySet[0] indicates the starting city.)
     
-    cityset|   |   |   |   |   |   |   |   |
-    index  | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
-    ----------------------------------------
-    city   | 0 | 1 | 2 | 1 | 3 | 1 | 2 | 1 |
-    index  |   |   |   | 2 |   | 3 | 3 | 2 |
-           |   |   |   |   |   |   |   | 3 |
-    ----------------------------------------
+    cityset|   |   |   |   |   |   |   |   | citySet[i]
+    index  | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |         ^
+    --------------------------------------------------------------------
+           | 0 | 1 | 2 | 1 | 3 | 1 | 2 | 1 | citySet[i].array[j]
+    city   |   |   |   | 2 |   | 3 | 3 | 2 |                  ^
+    index  |   |   |   |   |   |   |   | 3 | citySet[i].shortestPath[j]
+           |   |   |   |   |   |   |   |   |                         ^
+    --------------------------------------------------------------------       
     number | 1 | 1 | 1 | 2 | 1 | 2 | 2 | 3 |
-    of     |   |   |   |   |   |   |   |   |
+    of     |   |   |   |   |   |   |   |   | citySet[i].numberOfSet
     cities |   |   |   |   |   |   |   |   |
 */
 #include <stdio.h>
