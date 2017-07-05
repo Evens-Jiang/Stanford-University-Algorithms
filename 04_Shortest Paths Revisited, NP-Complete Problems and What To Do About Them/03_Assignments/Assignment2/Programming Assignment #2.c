@@ -12,6 +12,20 @@
         Else if size of S is greater than 2.
             C(S, i) = min { C(S-{i}, j) + dis(j, i)}, where j belongs to S, j != i and j != 1.
 */
+/*
+    number of city = 4
+    
+    cityset|   |   |   |   |   |   |   |   |
+    index  | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+    ----------------------------------------
+    city   | 0 | 1 | 2 | 1 | 3 | 1 | 2 | 1 |
+    index  |   |   |   | 2 |   | 3 | 3 | 2 |
+           |   |   |   |   |   |   |   | 3 |
+    ----------------------------------------
+    number | 1 | 1 | 1 | 2 | 1 | 2 | 2 | 3 |
+    of     |   |   |   |   |   |   |   |   |
+    cities |   |   |   |   |   |   |   |   |
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
