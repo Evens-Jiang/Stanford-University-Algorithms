@@ -16,17 +16,18 @@
     Example of citySet
     Number of cities = 4
     (citySet[0] indicates the starting city.)
+    The array in the citySet stores the city index.
     
-    cityset|   |   |   |   |   |   |   |   | citySet[i]
+    cityset|   |   |   |   |   |   |   |   | citySet[3]
     index  | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |         ^
     --------------------------------------------------------------------
-           | 0 | 1 | 2 | 1 | 3 | 1 | 2 | 1 | citySet[i].array[j]
+           | 0 | 1 | 2 | 1 | 3 | 1 | 2 | 1 | citySet[3].array[1] = 2
     city   |   |   |   | 2 |   | 3 | 3 | 2 |                  ^
-    index  |   |   |   |   |   |   |   | 3 | citySet[i].shortestPath[j]
-           |   |   |   |   |   |   |   |   |                         ^
+    index  |   |   |   |   |   |   |   | 3 | citySet[3].minDistance[1] = A[S, 2] (S = citySet[3])
+           |   |   |   |   |   |   |   |   |                        ^
     --------------------------------------------------------------------       
     number | 1 | 1 | 1 | 2 | 1 | 2 | 2 | 3 |
-    of     |   |   |   |   |   |   |   |   | citySet[i].numberOfSet
+    of     |   |   |   |   |   |   |   |   | citySet[3].sizeOfSet = 2
     cities |   |   |   |   |   |   |   |   |
 */
 /*
@@ -34,7 +35,7 @@
     Round down the min distace = 26442
     
     1. CPU: i5-6500
-        Running time =  (sec)
+        Running time =  69.344 (sec)
 	2. CPU: Duo E8400
         Running time = 108.531 (sec)
 */
@@ -45,8 +46,8 @@
 #include <float.h> /* DBL_MAX */
 
 typedef struct city_set{
-    int numberOfSet, *array;
-    double *shortestPath;
+    int sizeOfSet, *array;
+    double *minDistance;
 }city_set_t, *city_set_p;
 
 void errorExit(char* message);
@@ -112,7 +113,7 @@ void main(void){
 //        }
 //        printf("\n");
 //    }
-    printf("min = %lf\n", TSP(numberOfCity, adjMatrix));
+    printf("Minimum distance = %lf\n\n", TSP(numberOfCity, adjMatrix));
 
     fclose(inFile);
     clock_t end = clock();
@@ -187,8 +188,8 @@ int *positionOfOne(int n, int numberOfOnes){
 double findMin(city_set_p citySet, double **adjMatrix, int i, int j){
     int l;
     int tailCity = citySet[i].array[j], newCitySetIndex = i - (int)pow(2, tailCity - 1);
-    int newTailCity, lengthOfNewArray = citySet[newCitySetIndex].numberOfSet;
-    double min = DBL_MAX, shortestPath;
+    int newTailCity, lengthOfNewArray = citySet[newCitySetIndex].sizeOfSet;
+    double min = DBL_MAX, minDistance;
 //     printf("i = %d, j = %d\n", i, j);
 //     printf("newCitySetIndex = %d\n", newCitySetIndex);
 //     printf("tailCity = %d\n\n", tailCity);
@@ -196,10 +197,10 @@ double findMin(city_set_p citySet, double **adjMatrix, int i, int j){
     for(l = 0; l < lengthOfNewArray; l++){
         newTailCity = citySet[newCitySetIndex].array[l];
 //         printf("newTailCity = %d\n", newTailCity);
-        shortestPath = citySet[newCitySetIndex].shortestPath[l] + adjMatrix[newTailCity][tailCity];
-//         printf("shortestPath = %lf\n", shortestPath);
-        if(shortestPath < min)
-            min = shortestPath;
+        minDistance = citySet[newCitySetIndex].minDistance[l] + adjMatrix[newTailCity][tailCity];
+//         printf("minDistance = %lf\n", minDistance);
+        if(minDistance < min)
+            min = minDistance;
 //         printf("min = %lf\n\n", min);
     }
     return min;
@@ -234,21 +235,21 @@ double TSP(int numberOfCity, double **adjMatrix){
     tempBitCounter = combination(numberOfCity - 1, 1);
     for(i = 0; i < tempBitCounter; i++){
         tempCitySetIndex = citySetIndexArray[i];
-        citySet[tempCitySetIndex].numberOfSet = 1;
+        citySet[tempCitySetIndex].sizeOfSet = 1;
         citySet[tempCitySetIndex].array = malloc(sizeof(int));
-        citySet[tempCitySetIndex].shortestPath = malloc(sizeof(double));
+        citySet[tempCitySetIndex].minDistance = malloc(sizeof(double));
         if(!citySet[tempCitySetIndex].array){
             printf("Malloc citySet[%d].array failed.\n", tempCitySetIndex);
             errorExit(" ");
         }
-        if(!citySet[tempCitySetIndex].shortestPath){
-            printf("Malloc citySet[%d].shortestPath failed.\n", tempCitySetIndex);
+        if(!citySet[tempCitySetIndex].minDistance){
+            printf("Malloc citySet[%d].minDistance failed.\n", tempCitySetIndex);
             errorExit(" ");
         }
         /* Find the '1' position which represent the index of city */
         array = positionOfOne(tempCitySetIndex, 1);
         citySet[tempCitySetIndex].array[0] = array[0];
-        citySet[tempCitySetIndex].shortestPath[0] = adjMatrix[0][array[0]];
+        citySet[tempCitySetIndex].minDistance[0] = adjMatrix[0][array[0]];
         free(array);
     }
     free(citySetIndexArray);
@@ -259,7 +260,7 @@ double TSP(int numberOfCity, double **adjMatrix){
         citySetIndexArray = indexFinder(m, numberOfCity);
         for(i = 0; i < tempBitCounter; i++){
             tempCitySetIndex = citySetIndexArray[i];
-            citySet[tempCitySetIndex].numberOfSet = m;
+            citySet[tempCitySetIndex].sizeOfSet = m;
             citySet[tempCitySetIndex].array = malloc(m * sizeof(int));
             if(!citySet[tempCitySetIndex].array){
                 printf("Malloc citySet[%d].array failed.\n", tempCitySetIndex);
@@ -270,30 +271,30 @@ double TSP(int numberOfCity, double **adjMatrix){
             for(j = 0; j < m; j++)
                 citySet[tempCitySetIndex].array[j] = array[j];
             free(array);
-            citySet[tempCitySetIndex].shortestPath = malloc(m * sizeof(double));
-            if(!citySet[tempCitySetIndex].shortestPath){
-                printf("Malloc citySet[%d].shortestPath failed.\n", tempCitySetIndex);
+            citySet[tempCitySetIndex].minDistance = malloc(m * sizeof(double));
+            if(!citySet[tempCitySetIndex].minDistance){
+                printf("Malloc citySet[%d].minDistance failed.\n", tempCitySetIndex);
                 exit(1);
             }
             /* Calculate the minimum distance */
             for(j = 0; j < m; j++){
-                citySet[tempCitySetIndex].shortestPath[j] = findMin(citySet, adjMatrix, tempCitySetIndex, j);
+                citySet[tempCitySetIndex].minDistance[j] = findMin(citySet, adjMatrix, tempCitySetIndex, j);
             }
         }
-        /* Free the citySet array and shortestPath */
+        /* Free the citySet array and minDistance */
         tempBitCounter = combination(numberOfCity - 1, m - 1);
         free(citySetIndexArray);
         citySetIndexArray = indexFinder(m - 1, numberOfCity);
         for(i = 0; i < tempBitCounter; i++){
             tempCitySetIndex = citySetIndexArray[i];
             free(citySet[tempCitySetIndex].array);
-            free(citySet[tempCitySetIndex].shortestPath);
+            free(citySet[tempCitySetIndex].minDistance);
         }
         free(citySetIndexArray);
     }
     /* The last calculation back to starting city */
     for(i = 0; i < numberOfCity - 1; i++){
-        tempSP = citySet[citySetIndexAll - 1].shortestPath[i] + adjMatrix[citySet[citySetIndexAll - 1].array[i]][0];
+        tempSP = citySet[citySetIndexAll - 1].minDistance[i] + adjMatrix[citySet[citySetIndexAll - 1].array[i]][0];
         if(min > tempSP)
             min = tempSP;
     }
