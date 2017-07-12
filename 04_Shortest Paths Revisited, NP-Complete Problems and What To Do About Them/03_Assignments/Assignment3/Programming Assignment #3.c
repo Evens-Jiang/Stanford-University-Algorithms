@@ -2,7 +2,7 @@
     Traveling Salesman Problem - nearest neighbor heuristic
     Distance = 1203406.501271
     1. CPU: i5-6500
-        Running time =  (sec)
+        Running time = 348.520 (sec)
 	2. CPU: Duo E8400
         Running time = 477.987 (sec)
 */
