@@ -4,35 +4,16 @@
     The answer is 427.
     Brutal force method:
     1. CPU: i5-6500
-    Running time = 1467.959 (sec).
+        Running time = 1467.959 (sec).
 
     2. CPU: Duo E8400
-    Running time = 4597.308 (sec).
-    
-    Hash Table Chaing:
-    1. CPU: i5-6500
-    Running time =  (sec).
-
-    2. CPU: Duo E8400
-    Running time =  (sec).
+        Running time = 4597.308 (sec).
 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
 #define SIZE 1000000
-#define PRIME 9973 
-
-/* Hash Table chaining */
-typedef struct hash_table{
-    __int64 value;
-    struct hash_table *next;
-}hash_table, *hash_table_p;
-
-void addKey(__int64 value, hash_table_p hashTablePtr);
-int hash_function(__int64 value);
-int hash_findMatch(__int64 value, hash_table_p hashTablePtr);
-int hash_table_chaining(FILE *inFile);
 
 /* Brutal Force */    
 void swap_long(__int64 *a, __int64 *b);
@@ -50,8 +31,7 @@ void main(void){
     else
     	printf("Open file successfully!\n");
     
-//    int counter = brutal_force(inFile);
-    int counter = hash_table_chaining(inFile);
+    int counter = brutal_force(inFile);
     printf("Counter = %d\n", counter);
     fclose(inFile);
     
@@ -59,75 +39,6 @@ void main(void){
     printf("Running time = %.3f (sec)\n", (double)(end - begin) / CLOCKS_PER_SEC);
     return;
 }
-
-/* Hash Table chaining */
-void addKey(__int64 value, hash_table_p hashTablePtr){
-    if(hashTablePtr->value == 0){
-        hashTablePtr->value = value;
-        return;
-    }
-    hash_table_p tempPtr = hashTablePtr, newKey = (hash_table_p)malloc(sizeof(hash_table));
-    newKey->value = value;
-    newKey->next = NULL;
-    while(tempPtr->next != NULL)
-        tempPtr = tempPtr->next;
-    tempPtr->next = newKey;
-    return;
-}
-int hash_function(__int64 value){
-    int result = value % PRIME;
-    if(result >= 0)
-        return result;
-    else
-        return result + PRIME;
-}
-int hash_findMatch(__int64 value, hash_table_p hashTablePtr){
-    hash_table_p tempPtr = hashTablePtr;
-    while(tempPtr != NULL){
-        if(tempPtr->value == value)
-            return 1;
-        else
-            tempPtr = tempPtr->next;
-    }
-    return 0;
-}
-int hash_table_chaining(FILE *inFile){
-    hash_table_p hashTable = (hash_table_p)malloc(PRIME * sizeof(hash_table));
-    __int64 array[SIZE] = {0}, match;
-    int i = 0, counter = 0, temp = 0, target = -10000, index;
-    
-    for(i = 0; i < PRIME; i++){
-        hashTable[i].next = NULL;
-        hashTable[i].value = 0;
-    }
-    i = 0;
-    while(fscanf(inFile, "%lld", &array[i]) != EOF){
-        index = hash_function(array[i]);
-        addKey(array[i], &hashTable[index]);
-        i++;
-    }
-    printf("Hash table completed\n");
-    for(target = -10000; target <= 10000; target++){
-        for(i = 0; i < SIZE; i++){
-            match = target - array[i];
-            index = hash_function(match);
-            if(hash_findMatch(match, &hashTable[index])){
-                counter++;
-                printf("match = %lld\n", match);
-                printf("counter = %d\n\n", counter);
-                break;
-            }
-        }
-        if(temp < counter){
-            printf("%d match\n\n", target);
-            temp = counter;
-        }
-        else
-            printf("%d no match\n\n", target);
-    }
-    return counter;
-}
-
 
 /* Brutal force */
 void swap_long(__int64 *a, __int64 *b){
