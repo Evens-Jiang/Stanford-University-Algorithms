@@ -9,26 +9,24 @@
 */
 /*
     Duo E8400
-    POWER   PRIME       Memory(KB)      Time    Max Chaining Number
-     9         509      24688           304.0    1125
-    10        1021      24700           155.1     566
-    11        2039      24724            77.1     301
-    12        4091      24748            39.7     164
-    13        8191      24816            21.1      96
-    14       16381      24944            10.5      58
-    15       32749      25200             6.6      32
-    16       65521      25720             4.1      22
-    17      131071      26744             2.9      15
-    18      262139      28800             2.4      12
-    19      524287      32900             2.2       8
+       POWER       MAX    Memory(KB)   Time(sec)   Max Chaining Number
+         9         512      24688       304.0       1125
+        10        1024      24700       155.1        566
+        11        2048      24724        77.1        301
+        12        4096      24748        39.7        164
+        13        8192      24816        21.1         96
+        14       16384      24944        10.5         58
+        15       32768      25200         6.6         32
+        16       65536      25720         4.1         22
+        17      131072      26744         2.9         15
+        18      262144      28800         2.4         12
+        19      524287      32900         2.2          8
 */
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <math.h>
 
-#define POWER 19
-#define PRIME 524287
+#define MAX 262144
 
 typedef struct hash_table_chain{
     __int64 value;
@@ -49,7 +47,7 @@ void main(void){
     head_p pHashTable, nHashTable;
     chain_p nodePtr;
     __int64 value, tempValue, matchValue;
-    int index, maxIndex = (int) pow(2, POWER), nMaxChainingNumber = 0, pMaxChainingNumber = 0;
+    int index, maxIndex = MAX, nMaxChainingNumber = 0, pMaxChainingNumber = 0;
     int i, counter = 0, checkArray[20001] = {0}, checkArrayIndex;
     
     if(!inFile)
@@ -146,7 +144,7 @@ int hashFunction(__int64 key){
     key = key / 10000;
     if(key < 0)
         key *= (-1);
-    index = key % PRIME;
+    index = key % MAX;
     return index;
 }
 
