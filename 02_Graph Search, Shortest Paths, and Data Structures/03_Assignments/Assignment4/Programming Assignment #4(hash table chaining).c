@@ -2,14 +2,14 @@
     2 Sum Algorithm
     Hash table with chaining.
     1. CPU: i5-6500
-        Running time =  (sec).
+        Running time = 1.48 (sec).
 
     2. CPU: Duo E8400
         Running time = 2.4 (sec).
 */
 /*
     Duo E8400
-       POWER       MAX    Memory(KB)   Time(sec)   Max Chaining Number
+       POWER   MAX_SLOT    Memory(KB)   Time(sec)   Max Chaining Number
          9         512      24688       304.0       1125
         10        1024      24700       155.1        566
         11        2048      24724        77.1        301
@@ -26,7 +26,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define MAX 262144
+#define MAX_SLOT 524287
 
 typedef struct hash_table_chain{
     __int64 value;
@@ -47,7 +47,7 @@ void main(void){
     head_p pHashTable, nHashTable;
     chain_p nodePtr;
     __int64 value, tempValue, matchValue;
-    int index, maxIndex = MAX, nMaxChainingNumber = 0, pMaxChainingNumber = 0;
+    int index, maxIndex = MAX_SLOT, nMaxChainingNumber = 0, pMaxChainingNumber = 0;
     int i, counter = 0, checkArray[20001] = {0}, checkArrayIndex;
     
     if(!inFile)
@@ -144,7 +144,7 @@ int hashFunction(__int64 key){
     key = key / 10000;
     if(key < 0)
         key *= (-1);
-    index = key % MAX;
+    index = key % MAX_SLOT;
     return index;
 }
 
