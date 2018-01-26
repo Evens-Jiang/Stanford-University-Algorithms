@@ -1,7 +1,10 @@
-# Compiled source #
+# Compiled source
 *.exe
 
-# Text books, slildes, videos #
+# Texts
+*.txt
+
+# Text books, slildes, videos
 *.pdf
 *.mp4
 *.vtt
